@@ -153,7 +153,7 @@ if 'ON_HEROKU' in os.environ:
     ALLOWED_HOSTS.append('evening-beyond-62492.herokuapp.com')
     #import dj_database_url
     #DATABASES = {'default': dj_database_url.config(default='postgres://localhost')}
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
     STATIC_URL = '/static/'
     STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
     i = MIDDLEWARE.index("django.middleware.security.SecurityMiddleware")
