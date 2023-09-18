@@ -1,0 +1,83 @@
+{% extends 'core/base.html' %}
+
+{% block title %}My Cart{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl text-center font-bold my-3 ">My Cart</h1>
+
+
+<div class="overflow-x-auto">
+    <table class="table">
+      <!-- head -->
+      <thead>
+        <tr>
+          <th>Owner</th>
+          <th>Item</th>
+          <th class="text-center">Value</th>
+          <th class="text-center">Quantity</th>
+          <th></th>
+        </tr>
+      </thead>
+
+{% for item in cart %}
+
+              <tbody>
+                <!-- row 1 -->
+                <tr>
+                  <td>
+                    <div class="flex items-center space-x-3">
+                      <div class="avatar">
+                        <div class="mask mask-circle w-12 h-12">
+                          <img src={{ item.item.user.userprofile.get_thumbnail }}/>
+                        </div>
+                      </div>
+                      <div>
+                        <div class="font-bold">{% firstof item.item.user.get_full_name item.item.user.username %} </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="flex items-center space-x-3">
+                      <div class="avatar">
+                        <div class="mask mask-squircle w-12 h-12">
+                          <img src={{ item.item.get_thumbnail }} alt={{ item.item.title }} />
+                        </div>
+                      </div>
+                      <div>
+                        <div class="font-bold">{{ item.item.title }}</div>
+                        <div class="text-sm opacity-50">{{ item.item.description }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-right">
+                    ${{ item.item.get_display_value }}
+                    <br/>
+                    {% comment %} <span class="badge badge-ghost badge-sm">Desktop Support Technician</span> {% endcomment %}
+                  </td>
+                  <td class="text-center">
+                    
+                    <a href="{% url 'change_quantity' item.id %}?action=increase">+</a>
+                      {{item.quantity}}
+                    <a href="{% url 'change_quantity' item.id %}?action=decrease">-</a>
+                  </td>
+                  <th>
+                    <a href = {% url 'remove_from_cart' item.id %} class="btn btn-ghost btn-xs">
+                        <i class="fa fa-close"></i>
+                    </a>
+                  </th>
+                </tr>
+              
+
+        {% comment %} {% with product=item.product %} {% endcomment %}
+{% endfor %}
+
+    <th></th>
+    <th class="text-left">Total</th>
+    <th>${{cart.get_total_cost}}</th>
+    <th>
+      <a href={% url 'lend_request' %} class ="btn btn-xs">Request</a>
+    </th>
+    <th></th>
+
+
+{% endblock %}

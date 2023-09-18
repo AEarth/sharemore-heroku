@@ -1,0 +1,43 @@
+{% block content %}
+<span>
+<div class="dropdown dropdown-end dropdown-hover px-1">
+    <label tabindex="0" class="btn btn-sm">categories</label>
+    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-32">
+        {% for category in categories %} 
+        <li><a href="{% url 'category_detail' category.slug %}" class="text-base font-bold text-teal-600 text-center"> {{category.title}} </a></li>
+        {% endfor %}
+    </ul>
+  </div>
+
+  <div class="menu flex space-x-4 justify-between">
+
+        {% if request.user.is_authenticated %}
+        
+        <div class="dropdown dropdown-end dropdown-hover px-1">
+            <label tabindex="0" class="btn btn-sm">Account</label>
+            <ul tabindex="0"  class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-32 text-base font-bold text-teal-600 text-center">
+                
+                <a href="{% url 'my_inventory' %}">My Items</a>
+
+                <a href="{% url 'myaccount' %}"> 
+                    My Account {% firstof item.user.get_full_name item.user.username %} 
+                </a>                     
+                
+                <a href="{% url 'logout' %}"> Logout </a>   
+                
+            {% endif %}
+
+                {% comment %} {% if not request.user.is_authenticated %}
+                    <a class="btn btn-sm" href="{% url 'login' %}"> 
+                        Login
+                    </a>
+                {% endif %} {% endcomment %}
+            </ul>
+          </div>
+
+
+        
+    </span>
+</div>
+
+{% endblock %}

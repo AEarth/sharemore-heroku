@@ -1,0 +1,1 @@
+web: gunicorn sharemore.sharemore.wsgi --log-file -

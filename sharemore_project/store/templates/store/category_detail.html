@@ -1,0 +1,10 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ category.title }}{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl text-center font-bold m-3"> {{ category.title }} </h1>
+
+{% include 'store/item_category_grid.html' %}
+
+{% endblock %}

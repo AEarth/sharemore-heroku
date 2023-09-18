@@ -1,0 +1,35 @@
+{% block content %}
+<div class = "flex flex-wrap mt-2 items-center justify-around">
+    {% for item in items %}
+    <div class="card w-72 m-2 bg-base-100 shadow-xl">
+                <div>
+                    <a href="{% url 'item_detail'  item.category.slug item.slug %}">
+                    {% if item.image %}
+                        <figure><img src="{{ item.image.url }}" alt="{{ item.title }}" /></figure>
+                    {% endif %}
+                    </a>
+                </div>
+               
+                <div class="card-body">
+                   
+                    <a class="btn btn-sm btn-accent" href="{% url 'item_detail'  item.category.slug item.slug %}">
+                        
+                            <h3 class="card-title">
+                                <div class="text-sm">{{ item.title }}</div>
+                            </h3>
+                        
+                    </a>
+                   
+                        <p>{{ item.description }}</p>
+                        <div class="card-actions justify-end">
+                          <div class="badge badge-outline">${{ item.get_display_value }}</div> 
+                          <div class="badge badge-outline">{{ item.category }}</div> 
+                          <a class="badge badge-secondary"href="{% url 'vendor_page' item.user.id %}"> {% firstof item.user.get_full_name item.user.username %} </a>
+                      </div>        
+                    </div>
+                  </div> 
+    {% endfor %}
+</div>
+
+{% endblock %}
+```

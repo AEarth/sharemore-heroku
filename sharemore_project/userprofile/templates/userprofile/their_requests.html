@@ -1,0 +1,42 @@
+{% extends 'core/base.html' %}
+
+{% load custom_filters %}
+
+{% block title %}Their Requests{% endblock %}
+
+{% block content %}
+    <h1 class="text-2xl text-center font-bold my-2"> Their Requests </h1>
+
+    {% if their_requests %}
+            <h2 class="text-lg font-bold my-2"> My Items Requested to Share: </h2>
+
+            {% for their_request in their_requests.all %}
+
+               <b>Status: </b> {{their_request.get_status_display}}
+                <div class = "flex flex-wrap mt-2 items-center justify-around">
+                    <span><b>Pickup: </b> {{their_request.pickup_date}} -  <b>Return: </b>{{their_request.return_date}}</span>
+                </div>
+                <form method = "post" action="." enctype ="multipart/form-data" class="my-12 space-3">
+                    {% csrf_token %}
+                    {{form.as_p}}
+                        <button class="btn btn-primary btn-sm m-6" type="submit">Submit Request</button>
+                </form>
+
+                    {% for item in their_request.request_items.all|filter_myitems:user %}
+                        
+                        <div class = "flex flex-wrap mt-2 items-center justify-around">
+                            <li>  {{item.item.title}} </li>
+                        </div>
+                   
+                    {% endfor %}
+            
+            {% endfor %}
+
+
+        {% else %}
+            <h2 class="text-lg my-6"> You didn't make any requests yet.. </h2>
+    {% endif %}   
+
+{% endblock %}   
+
+

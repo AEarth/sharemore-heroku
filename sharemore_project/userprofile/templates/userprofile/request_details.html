@@ -1,0 +1,71 @@
+{% extends 'core/base.html' %}
+
+{% load custom_filters %}
+
+{% block title %}Requests{% endblock %}
+
+{% block content %}
+    <h1 class="text-2xl text-center font-bold my-2"> My Requests </h1>
+    {% if my_requests %}
+            <h2 class="text-lg font-bold my-2"> Your Requests: </h2>
+            {% for request in my_requests.all %}
+
+               <b>Status: </b> {{request.get_status_display}}
+
+                <div class = "flex flex-wrap mt-2 items-center justify-around">
+                    <span><b>Pickup: </b> {{request.pickup_date}} -  <b>Return: </b>{{request.return_date}}</span>
+                </div>
+
+                    {% for item in request.request_items.item%}
+                        
+                        <div class = "flex flex-wrap mt-2 items-center justify-around">
+                            <li>  {{item.item.title}} </li>
+                        </div>
+                   
+                    {% endfor %}
+            {% endfor %}
+        {% else %}
+            <h2 class="text-lg my-6"> You didn't make any requests yet.. </h2>
+    {% endif %}   
+
+    {% if requests_and_forms %}
+            <h2 class="text-lg font-bold my-2"> My Items Requested to Share: </h2>
+
+            {% comment %} {% for their_request in their_requests.all %} {% endcomment %}
+
+                {% for request, form in requests_and_forms %}
+                    {% for item in request.request_items.all|filter_myitems:user %}
+                    <div class = "flex flex-wrap items-start mt-2 justify-around">
+                        <li>  {{item.item.title}} </li>
+                    </div>
+                    {% endfor %} 
+                    <form method="post">
+                        {% csrf_token %}
+                            {{ form.as_p }}          
+                        {% comment %} {{form.status}}
+                        {{form.pickup_date}}
+                        {{form.return_date}} {% endcomment %}
+                        <button class = "btn btn-primary btn-sm m-6" type="submit">Update {{ task.title }}</button>
+                        {% comment %} {{ form.as_p }} {% endcomment %}
+     
+                       
+                    </form>
+                {% endfor %}
+
+            {% comment %} <b>Status: </b> {{their_request.get_status_display}}
+            <div class = "flex flex-wrap mt-2 items-center justify-around">
+                <span><b>Pickup: </b> {{their_request.pickup_date}} -  <b>Return: </b>{{their_request.return_date}}</span>
+            </div>
+           
+         {% endcomment %}
+        {% comment %} {% endfor %} {% endcomment %}
+
+
+        
+        {% else %}
+            <h2 class="text-lg my-6"> You didn't make any requests yet.. </h2>
+    {% endif %}   
+
+{% endblock %}   
+
+

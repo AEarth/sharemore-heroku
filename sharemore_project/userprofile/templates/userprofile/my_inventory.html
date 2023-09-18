@@ -1,0 +1,24 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Inventory{% endblock %}
+
+{% block content %}
+    <h1 class="text-2xl text-center font-bold my-2"> My Inventory </h1>
+
+        <div class="grid justify-items-end">
+                <a href="{% url 'add_item' %}"  class="btn btn-primary">Add Item</a>
+        </div>
+
+    {% if items %}
+            <h2 class="text-lg font-bold my-2"> Your Items: </h2>
+                <div class = "flex flex-wrap mt-2 items-center justify-around">
+                    {% comment %} {% for user_item in user_items %} {% endcomment %}
+                        {% include 'store/item_grid2.html' %}
+                    {% comment %} {% endfor %} {% endcomment %}
+                </div>
+
+        {% else %}
+            <h2 class="text-lg my-6"> No Items added yet.. </h2>
+    {% endif %}   
+
+{% endblock %}   

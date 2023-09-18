@@ -1,0 +1,16 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Lend Request{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl text-center font-bold my-3 ">Lend Request</h1>
+
+<form method = "post" action="." enctype ="multipart/form-data" class="my-12 space-3">
+    {% csrf_token %}
+    {{form.as_p}}
+        <button class="btn btn-primary btn-sm m-6" type="submit">Submit Request</button>
+</form>
+</div>
+{% endblock %}
+
+

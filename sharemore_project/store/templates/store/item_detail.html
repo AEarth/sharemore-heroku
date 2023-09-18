@@ -1,0 +1,38 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ item.title }}{% endblock %}
+
+{% block content %}
+
+<div class="hero min-h-screen bg-base-200">
+   
+    <div class="hero-content flex-col lg:flex-row">
+        <h1 class="text-5xl font-bold">{{ item.title }}</h1>
+        {% if item.image %}
+            <img src="{{ item.image.url }}" alt="{{ item.title }}" class="max-w-sm rounded-lg shadow-xl"/>
+
+    {% endif %}
+    
+      <div>
+        
+     <div class="badge"> Value: ${{ item.get_display_value }}</div>
+    <div class="badge badge-primary"><a href="{% url 'vendor_page' item.user.id %}" {% firstof item.user.get_full_name item.user.username %} ">{{ item.user.get_full_name }}</a>
+    </div>
+        
+       
+    {% if item.description %}
+    <p class="mt-4">
+
+        <p class="py-6">{{ item.description }}</p>
+    {% endif %}
+        <a href = {% url 'add_to_cart' item.id %} class="btn btn-primary">Add to cart</a>
+ 
+
+      </div>
+    </div>
+  </div>
+
+
+
+
+{% endblock %}

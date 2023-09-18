@@ -1,0 +1,6 @@
+venv
+*.pyc
+.scraps
+# Ignore logs from simple_deploy.
+simple_deploy_logs/
+.idea

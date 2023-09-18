@@ -1,0 +1,29 @@
+{% comment %} <div className="badge badge-primary badge-sm text-black"></div> {% endcomment %}
+
+<ul>
+
+    {% for string in approved_string %}
+   <li>
+    <span> <i class="fa fa-check"></i>
+        {{ string }}
+    </li>
+    {% endfor %}
+
+    {% for string in pending_string %}
+    <li>
+     <span> <i class="fa fa-question-circle"></i>
+         {{ string }}
+     </li>
+     {% endfor %}
+
+     {% for string in denied_string %}
+     <li>
+      <span> <i class="fa fa-x"></i>
+          {{ string }}
+      </li>
+      {% endfor %}
+    </ul>
+</span>
+
+
+
