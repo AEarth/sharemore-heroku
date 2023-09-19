@@ -8,7 +8,7 @@ whitenoise
 Pillow==10.0.0
 django-htmx==1.16.0
 django-tailwind==3.6.0
-django-simple-deploy
+#django-simple-deploy
 
 #django widget tweaks?
 psycopg2                      # Added by simple_deploy command.
