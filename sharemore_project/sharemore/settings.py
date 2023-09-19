@@ -150,7 +150,7 @@ INTERNAL_IPS = [
 ]
 import os
 if 'ON_HEROKU' in os.environ:
-    ALLOWED_HOSTS.append('evening-beyond-62492.herokuapp.com')
+    ALLOWED_HOSTS.append('calm-falls-01048-3c50bad2366d.herokuapp.com')
     #import dj_database_url
     #DATABASES = {'default': dj_database_url.config(default='postgres://localhost')}
     STATIC_ROOT = os.path.join(BASE_DIR, 'static')
