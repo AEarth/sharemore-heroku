@@ -1,1 +1,1 @@
-web: cd sharemore_project && gunicorn sharemore.wsgi --log-file -
+web: gunicorn sharemore.wsgi --log-file -
