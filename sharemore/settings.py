@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'userprofile',
     'store',
     'django_htmx',
-    'simple_deploy', 
+    # 'simple_deploy', 
 ]
 
 # NPM_BIN_PATH = r"C:\Users\Arthur\AppData\Roaming\npm"
