@@ -1,1 +1,1 @@
-This is a local django project
+This is a local django projectve

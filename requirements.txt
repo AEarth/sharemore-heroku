@@ -1,13 +1,12 @@
 django
 #django-compressor
-django-allauth
+#django-allauth
 #mysqlclient
 #psycopg2-binary
 gunicorn
 whitenoise
 Pillow==10.0.0
 django-htmx==1.16.0
-django-tailwind==3.6.0
 #django-simple-deploy
 
 #django widget tweaks?
