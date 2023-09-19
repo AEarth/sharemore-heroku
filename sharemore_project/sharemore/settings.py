@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-5aowb$!h226l#b+#f-8y$4jqx2&c9oq#1*xjco+m-41y4%+jz=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['calm-falls-01048-3c50bad2366d.herokuapp.com', '.share-more.org' ]
+ALLOWED_HOSTS = ['sharemore1-*.herokuapp.com', '.share-more.org' ]
 
 LOGIN_REDIRECT_URL = 'myaccount'
 LOGOUT_REDIRECT_URL = 'frontpage'
@@ -150,7 +150,7 @@ INTERNAL_IPS = [
 ]
 import os
 if 'ON_HEROKU' in os.environ:
-    ALLOWED_HOSTS.append('calm-falls-01048-3c50bad2366d.herokuapp.com')
+    ALLOWED_HOSTS.append('sharemore1-*.herokuapp.com')
     #import dj_database_url
     #DATABASES = {'default': dj_database_url.config(default='postgres://localhost')}
     STATIC_ROOT = os.path.join(BASE_DIR, 'static')
