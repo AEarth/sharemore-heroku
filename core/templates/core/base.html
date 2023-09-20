@@ -33,7 +33,7 @@
         </div> 
     </a>
 
-                 <form method="get" action="/search/" class="w-1 w-1/2 translate-y-1/4">   
+                 <form method="get" action="/search/" class="w-1/2 translate-y-1/4">   
                         <input type="search" name="query" method ="get" id="default-search" class="input-sm input-bordered rounded-lg w-full sm:w-full" placeholder="Search">
                 </form>
 
@@ -56,9 +56,7 @@
 
                     <div class="dropdown dropdown-end dropdown-hover z-[1] text-2xl items-center translate-y-1/4 text-white mr-4 ">
                         <label tabindex="0">
-                            <a href={% url 'request_detail' %}>
-                                <i class="fa fa-bell"> </i>
-                            </a>
+                             <i class="fa fa-bell"> </i>
                             <p hx-get="{% url 'request_count_bell' %}" hx-trigger="load"/>
                         </label>
                        
@@ -99,26 +97,24 @@
                     {% endif %}
 
                     {% if not request.user.is_authenticated %}
-                    <a class="btn btn-xs sm:btn-sm" href="{% url 'login' %}"> 
-                        Login
+
+                    <a class="hidden btn btn-xs sm:inline-flex sm:btn-xs" href="{% url 'signup' %}"> 
+                        <i class="fa-solid fa-user-plus"></i>SignUp
                     </a>
-                    <a class="btn btn-xs sm:btn-sm" href="{% url 'signup' %}"> 
-                        SignUp
+                    <a class="hidden btn btn-xs sm:inline-flex sm:btn-xs" href="{% url 'login' %}"> 
+                        <i class="fa fa-sign-in" aria-hidden="true"></i>Login
                     </a>
+             
+
+                            <a class="btn btn-xs sm:hidden" href="{% url 'signup' %}"> 
+                                <i class="fa-solid fa-user-plus"></i> 
+                            </a>
+                            <a class="btn btn-xs sm:hidden" href="{% url 'login' %}"> 
+                                <i class="fa fa-sign-in" aria-hidden="true"></i>
+                            </a>
                     {% endif %}
 
-                    {% if request.user.is_authenticated %}
 
-                    
-                    {% comment %} <a href="{% url 'about' %}" class="text-white text-lg">
-                        <i class="fa fa-bell">
-                        </i> {% endcomment %}
-
-                   
-                        {% comment %} <i class="px-1 fa-solid fa-circle-info"></i> {% endcomment %}
-                        </a>
-                        {% endif %}
-                    
                 </span>
             </div>
 
