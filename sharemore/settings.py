@@ -18,7 +18,7 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-enviro_set = 'local'
+enviro_set = 'prod'
 
 env = environ.Env(
     # set casting, default value
@@ -36,7 +36,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com', '.share-more.org' ]
 
@@ -160,10 +160,9 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media/'
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static_prod') #this is a deployment setting, not local dev setting
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_prod') #tells ngix where to find static files. this is useless in dev only required for deployment
 
-STATICFILES_DIRS = [BASE_DIR / "static"] #production dir setting that should be outside project, currently handled by heroku environs?
-
+STATICFILES_DIRS = [BASE_DIR / "static"] #provides additional directories for collectstatic to look for static files
 
 STORAGES = {
     "default": {
