@@ -1,4 +1,4 @@
-{% extends 'core/base.html' %}
+{% comment %} {% extends 'core/base.html' %} {% endcomment %}
 
 
 {% block title %} About {% endblock %}
@@ -9,11 +9,6 @@
 
 {% comment %} <a hx-get="{% url 'about' %}"> HTMX Link to My Account </a> {% endcomment %}
 
-<p>{% include 'userprofile/partials/count_bell.html' %}</p>
-
-{% comment %} <p hx-get="{% url 'request_count_bell' %}" hx-trigger="load"></p> {% endcomment %}
-<div class="hidden xl:block">a</div>
-<div class="hidden xl:hidden sm:block">b</div>
-<div class="sm:hidden">c</div>
+<p>{% include 'core/partials/request_count_bell.html' %}</p>
 
 {% endblock %}

@@ -11,22 +11,34 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import environ
 import os
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+enviro_set = 'local'
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, True)
+)
+
+# Take environment variables from .env file
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-5aowb$!h226l#b+#f-8y$4jqx2&c9oq#1*xjco+m-41y4%+jz='
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '*.herokuapp.com', '.share-more.org' ]
+ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com', '.share-more.org' ]
 
 LOGIN_REDIRECT_URL = 'myaccount'
 LOGOUT_REDIRECT_URL = 'frontpage'
@@ -47,6 +59,8 @@ INSTALLED_APPS = [
     'userprofile',
     'store',
     'django_htmx',
+    'django_fsm',
+    'django_extensions'
     # 'simple_deploy', 
 ]
 
@@ -59,10 +73,15 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'threadlocals.middleware.ThreadLocalMiddleware', # custom threadlocals middleware
+    #'sharemore.middleware.CurrentUserMiddleware', # custom current user middleware
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
      "django_htmx.middleware.HtmxMiddleware",
 ]
+
+
+
 
 ROOT_URLCONF = 'sharemore.urls'
 
@@ -72,6 +91,7 @@ TEMPLATES = [
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
+            'string_if_invalid': 'INVALID VAR/EXP: %s', #added this for debug not production
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
@@ -79,7 +99,9 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 # my additions
                 'core.context_processors.navigation',
+                'core.context_processors.base_bell'
             ],
+            
         },
     },
 ]
@@ -133,11 +155,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media/'
-# STATICFILES_DIRS = [BASE_DIR / "static"]
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_prod') #this is a deployment setting, not local dev setting
+
+STATICFILES_DIRS = [BASE_DIR / "static"] #production dir setting that should be outside project, currently handled by heroku environs?
+
 
 STORAGES = {
     "default": {
@@ -164,6 +190,15 @@ GRAPH_MODELS = {
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+
+if enviro_set == 'local':
+    print("Running Local Apps")
+    INSTALLED_APPS.insert(4,'livereload')
+    MIDDLEWARE += ['livereload.middleware.LiveReloadScript',]
+    
+
+
 import os
 if 'ON_HEROKU' in os.environ:
     ALLOWED_HOSTS.append('sharemore1-*.herokuapp.com')
@@ -175,4 +210,4 @@ if 'ON_HEROKU' in os.environ:
     i = MIDDLEWARE.index("django.middleware.security.SecurityMiddleware")
     MIDDLEWARE.insert(i + 1, "whitenoise.middleware.WhiteNoiseMiddleware")
     DEBUG = os.getenv('DEBUG') == 'TRUE'
-    SECRET_KEY = os.getenv('SECRET_KEY')
+    #SECRET_KEY = os.getenv('SECRET_KEY')

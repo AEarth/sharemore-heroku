@@ -5,9 +5,9 @@
 {% block title %}Requests{% endblock %}
 
 {% block content %}
-    <h1 class="text-2xl text-center font-bold my-2"> My Requests </h1>
+    <h1 class="text-2xl text-center font-bold my-2"> All Share Requests </h1>
     {% if my_requests %}
-            <h2 class="text-lg font-bold my-2"> Your Requests: </h2>
+            <h2 class="text-lg font-bold my-2"> My Requests to others: </h2>
             {% for request in my_requests.all %}
 
                <b>Status: </b> {{request.get_status_display}}
@@ -24,9 +24,25 @@
                    
                     {% endfor %}
             {% endfor %}
-        {% else %}
+    {% else %}
             <h2 class="text-lg my-6"> You didn't make any requests yet.. </h2>
     {% endif %}   
+
+
+    {% if recieve_confirm_and_forms %}
+        {% for request, form in recieve_confirm_and_forms %}
+            <p> {{request.requester}} asked for item from {{ request.giver }} request status is currently {{ request.workflow_state }} </p>
+            <form method="post">
+                {% csrf_token %}
+                    {{ form.workflow_state }}         
+                <button class = "btn btn-primary btn-sm m-6" type="submit">Update</button>
+            </form>
+        {% endfor %}
+
+    {% else %}
+        <h2 class="text-lg my-6"> You didn't make any requests yet.. </h2>
+    {% endif %}                         
+        
 
     {% if requests_and_forms %}
             <h2 class="text-lg font-bold my-2"> My Items Requested to Share: </h2>
@@ -45,7 +61,7 @@
                         {% comment %} {{form.status}}
                         {{form.pickup_date}}
                         {{form.return_date}} {% endcomment %}
-                        <button class = "btn btn-primary btn-sm m-6" type="submit">Update {{ task.title }}</button>
+                        <button class = "btn btn-primary btn-sm m-6" type="submit">Update</button>
                         {% comment %} {{ form.as_p }} {% endcomment %}
      
                        

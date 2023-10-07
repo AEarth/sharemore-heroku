@@ -4,3 +4,5 @@ venv
 # Ignore logs from simple_deploy.
 simple_deploy_logs/
 .idea
+.env
+static_prod

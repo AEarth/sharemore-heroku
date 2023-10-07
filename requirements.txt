@@ -8,6 +8,11 @@ whitenoise
 Pillow==10.0.0
 django-htmx==1.16.0
 #django-simple-deploy
+django-environ
+
+django-fsm==2.8.1
+django-extensions==3.2.3
+django-threadlocals==0.10
 
 #django widget tweaks?
 psycopg2                      # Added by simple_deploy command.

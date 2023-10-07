@@ -1,5 +1,7 @@
-from store.models import Item, Category
+from store.models import Item, Category, LendRequest
 from userprofile.models import Userprofile
+
+from django.contrib.auth.decorators import login_required
 
 
 def navigation(request):
@@ -10,6 +12,27 @@ def navigation(request):
         context['users'] = Userprofile.objects.all()
         return context
 
+
+
+def base_bell(request):
+    if request.user.is_authenticated:
+        approved_count = LendRequest.objects.filter(requester=request.user, status='a').count()
+        denied_count = LendRequest.objects.filter(requester=request.user, status='d').count()
+        pending_count = LendRequest.objects.filter(giver=request.user, status='p').count()
+        
+        all_count = approved_count + denied_count + pending_count
+
+        context = {
+            'approved_count': approved_count,
+            'denied_count': denied_count,
+            'pending_count': pending_count,
+            'all_count': all_count,
+        }
+
+        return context
+    else:
+        context = {}
+    return context
 
 # core/context_processors.py
 

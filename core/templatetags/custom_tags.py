@@ -6,9 +6,21 @@ from store.models import Item, LendRequest
 register = template.Library()
 
 @login_required
-@register.inclusion_tag(r"templates\core\partials\account_bell.html")
-def request_approved_bell(request):
-    approved_requests = LendRequest.objects.filter(giver=request.user, status='a')
-    request_count = approved_requests.count()
+# @register.inclusion_tag(r"templates\core\partials\request_account_bell.html")
+def request_account_bell(request):
+    approved_count = LendRequest.objects.filter(requester=request.user, status='a').count()
+    denied_count = LendRequest.objects.filter(requester=request.user, status='d').count()
+    pending_count = LendRequest.objects.filter(giver=request.user, status='p').count()
+    
+    all_count = approved_count + denied_count + pending_count
 
-    return {'request_count' : request_count}
+    context = {
+        'approved_count': approved_count,
+        'denied_count': denied_count,
+        'pending_count': pending_count,
+        'all_count': all_count,
+    }
+
+
+    #return {'request_count' : request_count}
+    return context

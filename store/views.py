@@ -5,14 +5,14 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 
 from .models import Item, Category, LendRequest, RequestItems
-from .forms import LendRequestForm
+from .forms import LendRequestForm, LendApproveForm
 from .cart import Cart
+
 
 
 @login_required
 def lend_request(request):
     cart = Cart(request)
-    
     
     if request.method == 'POST':
         form = LendRequestForm(request.POST)

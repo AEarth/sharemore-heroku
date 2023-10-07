@@ -6,7 +6,7 @@
         <div>
             <a href="{% url 'item_detail'  item.category.slug item.slug %}">
             {% if item.image %}
-                <figure><img src="{{ item.get_image_med }}" alt="{{ item.title }}" /></figure>
+                <figure><img src="{{ item.image_med.url }}" alt="{{ item.title }}" /></figure>
             {% endif %}
             </a>
         </div>

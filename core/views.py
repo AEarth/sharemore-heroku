@@ -13,18 +13,28 @@ from store.models import Item, Category, LendRequest, RequestItems
 from store.forms import LendRequestForm
 from store.cart import Cart
 
-   
+from store.models import Item, LendRequest
+
+from core.context_processors import navigation
+
 def base(request):
-    return render(request, 'core/base.html', {
-    })
+
+    # bell stuff is now in context_processor
+    context = {}
+
+    return render(request, 'core/base.html', context)
 
 def frontpage(request):
-    return render(request, 'core/frontpage.html', {
-    })
-
+    context = {}
+    return render(request, 'core/frontpage.html', context)
+    
+    
 def about(request):
-    return render(request, 'core/about.html', {
-    })
+ 
+    context = {
+    }
+
+    return render(request, 'core/about.html', context)
 
 # from userprofile.models import Userprofile
 # from django.views.generic import TemplateView

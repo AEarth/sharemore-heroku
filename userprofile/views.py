@@ -6,16 +6,63 @@ from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
 from django.contrib import messages
 
+from django import forms
+
 
 from .models import Userprofile
 from store.forms import ItemForm
-from store.models import Item, LendRequest
+from store.models import Item, LendRequest, WorkflowState
 
 from core.context_processors import navigation
 
 from .forms import UserprofileForm
 
 from store.forms import LendApproveForm
+
+@login_required
+def request_detail(request):
+    my_requests = LendRequest.objects.filter(requester=request.user)
+    their_requests = LendRequest.objects.filter(giver=request.user)
+    
+    if request.method == 'POST':
+        #this form is to approve and possibly adjust dates on a request.
+        for their_request in their_requests:
+            if their_request.workflow_state == WorkflowState.PENDING:
+                their_pending_approval_request = their_request
+                approval_form = LendApproveForm(request.POST, prefix=str(their_pending_approval_request.id), instance=their_pending_approval_request)
+                if approval_form.is_valid():
+                    approval_form.save()
+                    return redirect('request_detail')
+                    
+        #this form is to confirm the requested item has been received. dates are hidden. 
+        for my_request in my_requests:
+            if my_request.workflow_state == WorkflowState.APPROVED:
+                my_recieve_confirm_request = my_request
+                recieve_confirm_form = LendApproveForm(request.POST, prefix=str(my_recieve_confirm_request.id), instance=my_recieve_confirm_request)
+                recieve_confirm_form.fields['status'].widget = forms.HiddenInput()
+                #recieve_confirm_form['pickup_date'].attrs['readonly'] = True
+                #recieve_confirm_form['return_date'].attrs['readonly'] = True
+                if recieve_confirm_form.is_valid():
+                    recieve_confirm_form.save()
+                    return redirect('request_detail')            
+
+            return redirect('request_detail')
+    else:
+        form = LendApproveForm() 
+        
+    approval_forms = [LendApproveForm(prefix=str(their_pending_approval_request.id), instance=their_pending_approval_request) for their_pending_approval_request in their_requests]
+    
+    recieve_confirm_forms = [LendApproveForm(prefix=str(my_recieve_confirm_request.id), instance=my_recieve_confirm_request) for my_recieve_confirm_request in my_requests]
+    
+    
+    context = {
+        'my_requests': my_requests,
+        'approval_forms': approval_forms,
+        'recieve_confirm_forms': recieve_confirm_forms,
+        'approval_requests_and_forms': zip(my_requests, approval_forms),
+        'recieve_confirm_and_forms': zip(their_requests, recieve_confirm_forms),
+    }
+    return render(request, 'userprofile/request_details.html', context)
 
 @login_required
 def request_strings(request):
@@ -44,36 +91,10 @@ def request_count_bell(request):
         'approved_count': approved_count,
         'denied_count': denied_count,
         'pending_count': pending_count,
-        'all_count': all_count,
+        'all_count': int(all_count),
     }
 
-    return render(request, 'userprofile/partials/count_bell.html', context)
-
-
-@login_required
-def request_detail(request):
-    my_requests = LendRequest.objects.filter(requester=request.user)
-    their_requests = LendRequest.objects.filter(giver=request.user)
-    
-    if request.method == 'POST':
-        for a_request in their_requests:
-            form = LendApproveForm(request.POST, prefix=str(a_request.id), instance=a_request)
-
-            if form.is_valid():
-                form.save()
-            
-            return redirect('request_detail')
-    else:
-        form = LendApproveForm() 
-        
-    forms = [LendApproveForm(prefix=str(a_request.id), instance=a_request) for a_request in their_requests]
-    
-    context = {
-        'my_requests': my_requests,
-        'forms': forms,
-        'requests_and_forms': zip(their_requests, forms),
-    }
-    return render(request, 'userprofile/request_details.html', context)
+    return render(request, 'userprofile/partials/request_count_bell.html', context)
 
 # def update_tasks(request):
 #     tasks = Task.objects.all()
@@ -148,7 +169,11 @@ def edit_profile(request):
        
 @login_required
 def myaccount(request):
-    return render(request, 'userprofile/myaccount.html')
+    my_profile = request.user.userprofile
+    context = {
+        'my_profile': my_profile,
+    }
+    return render(request, 'userprofile/myaccount.html', context)
 
 @login_required
 def my_inventory(request):
