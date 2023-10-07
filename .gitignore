@@ -5,4 +5,4 @@ venv
 simple_deploy_logs/
 .idea
 .env
-static_prod
+static_local/
