@@ -196,7 +196,7 @@ if enviro_set == 'local':
     INSTALLED_APPS.insert(4,'livereload')
     MIDDLEWARE += ['livereload.middleware.LiveReloadScript',]
     
-
+test='test'
 
 import os
 if 'ON_HEROKU' in os.environ:
