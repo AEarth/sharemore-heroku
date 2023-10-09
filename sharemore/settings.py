@@ -40,7 +40,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*",'127.0.0.1', '.herokuapp.com', '.share-more.org', '.railway.app', "https://www.share-more.org", "http://www.share-more.org", "https://share-more.org", "http://share-more.org", "https://*.up.railway.app"]
 
-CSRF_TRUSTED_ORIGINS = ["https://*.up.railway.app"]
+CSRF_TRUSTED_ORIGINS = ["https://*.share-more.org"]
 # CSRF_TRUSTED_ORIGINS,  = ["https://www.share-more.org", "http://www.share-more.org", "https://share-more.org", "http://share-more.org", "https://*.up.railway.app"]
 # CSRF_TRUSTED_ORIGINS = ["https://www.share-more.org", "http://www.share-more.org", "https://share-more.org", "http://share-more.org"]
 # CSRF_TRUSTED_ORIGINS = ["https://www.share-more.org", "http://www.share-more.org", "https://share-more.org", "http://share-more.org"]
@@ -140,23 +140,6 @@ DATABASES = {
         'PORT': os.environ["PGPORT"],
     }
 }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'railway',
-#         'USER': 'postgres',
-#         'PASSWORD': 'N2U7vmHviwV8ugYrrdwI',
-#         'HOST': 'containers-us-west-208.railway.app',
-#         'PORT': '6361',
-#     }
-# }
-
-
-DATABASE_URL="postgresql://postgres:i9SQ12IdmqlwEhdm04Ua@containers-us-west-179.railway.app:6652/railway"
-
-
-
 
 
 
