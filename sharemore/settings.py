@@ -80,9 +80,9 @@ MIDDLEWARE = [
      "django_htmx.middleware.HtmxMiddleware",
 ]    
 
-if enviro_set == 'local':
-    MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
-    INSTALLED_APPS += ["debug_toolbar"]
+# if enviro_set == 'local':
+#     MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
+#     INSTALLED_APPS += ["debug_toolbar"]
 
 
 
