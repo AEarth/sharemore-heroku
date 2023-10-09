@@ -38,7 +38,11 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com', '.share-more.org', 'sharemore-prod.up.railway.app', 'sharemore-test.up.railway.app' ]
+ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com', '.share-more.org', '.railway.app', "https://www.share-more.org", "http://www.share-more.org", "https://share-more.org", "http://share-more.org" ]
+CSRF_TRUSTED_ORIGINS = ["https://www.share-more.org", "http://www.share-more.org", "https://share-more.org", "http://share-more.org"]
+CSRF_TRUSTED_ORIGINS = ["https://www.share-more.org", "http://www.share-more.org", "https://share-more.org", "http://share-more.org"]
+CSRF_TRUSTED_ORIGINS = ["https://www.share-more.org", "http://www.share-more.org", "https://share-more.org", "http://share-more.org"]
+
 
 LOGIN_REDIRECT_URL = 'myaccount'
 LOGOUT_REDIRECT_URL = 'frontpage'
