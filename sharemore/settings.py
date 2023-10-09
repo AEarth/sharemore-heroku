@@ -38,10 +38,12 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com', '.share-more.org', '.railway.app', "https://www.share-more.org", "http://www.share-more.org", "https://share-more.org", "http://share-more.org" ]
-CSRF_TRUSTED_ORIGINS = ["https://www.share-more.org", "http://www.share-more.org", "https://share-more.org", "http://share-more.org"]
-CSRF_TRUSTED_ORIGINS = ["https://www.share-more.org", "http://www.share-more.org", "https://share-more.org", "http://share-more.org"]
-CSRF_TRUSTED_ORIGINS = ["https://www.share-more.org", "http://www.share-more.org", "https://share-more.org", "http://share-more.org"]
+ALLOWED_HOSTS = ["*",'127.0.0.1', '.herokuapp.com', '.share-more.org', '.railway.app', "https://www.share-more.org", "http://www.share-more.org", "https://share-more.org", "http://share-more.org", "https://*.up.railway.app"]
+
+CSRF_TRUSTED_ORIGINS = ["https://*.up.railway.app"]
+# CSRF_TRUSTED_ORIGINS,  = ["https://www.share-more.org", "http://www.share-more.org", "https://share-more.org", "http://share-more.org", "https://*.up.railway.app"]
+# CSRF_TRUSTED_ORIGINS = ["https://www.share-more.org", "http://www.share-more.org", "https://share-more.org", "http://share-more.org"]
+# CSRF_TRUSTED_ORIGINS = ["https://www.share-more.org", "http://www.share-more.org", "https://share-more.org", "http://share-more.org"]
 
 
 LOGIN_REDIRECT_URL = 'myaccount'
@@ -120,12 +122,42 @@ WSGI_APPLICATION = 'sharemore.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+#local database setting
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ["PGDATABASE"],
+        'USER': os.environ["PGUSER"],
+        'PASSWORD': os.environ["PGPASSWORD"],
+        'HOST': os.environ["PGHOST"],
+        'PORT': os.environ["PGPORT"],
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'railway',
+#         'USER': 'postgres',
+#         'PASSWORD': 'N2U7vmHviwV8ugYrrdwI',
+#         'HOST': 'containers-us-west-208.railway.app',
+#         'PORT': '6361',
+#     }
+# }
+
+
+DATABASE_URL="postgresql://postgres:i9SQ12IdmqlwEhdm04Ua@containers-us-west-179.railway.app:6652/railway"
+
+
+
+
 
 
 # Password validation
@@ -164,7 +196,9 @@ USE_TZ = True
 
 
 MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media/'
+#MEDIA_ROOT = BASE_DIR / 'media/' #local or heroku setting
+MEDIA_ROOT = os.environ["RAILWAY_VOLUME_MOUNT_PATH"] #railway setting
+
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_prod') #tells ngix where to find static files. this is useless in dev only required for deployment
@@ -217,3 +251,5 @@ if 'ON_HEROKU' in os.environ:
     MIDDLEWARE.insert(i + 1, "whitenoise.middleware.WhiteNoiseMiddleware")
     DEBUG = os.getenv('DEBUG') == 'TRUE'
     SECRET_KEY = os.getenv('SECRET_KEY')
+
+
