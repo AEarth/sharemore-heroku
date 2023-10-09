@@ -10,15 +10,26 @@
         </div>
 
     {% if items %}
-            <h2 class="text-lg font-bold my-2"> Your Items: </h2>
+            <h2 class="text-lg font-bold my-2"> My Items to Share: </h2>
                 <div class = "flex flex-wrap mt-2 items-center justify-around">
-                    {% comment %} {% for user_item in user_items %} {% endcomment %}
+                    {% for item in items %}
                         {% include 'store/item_grid2.html' %}
-                    {% comment %} {% endfor %} {% endcomment %}
+                    {% endfor %}
                 </div>
-
         {% else %}
-            <h2 class="text-lg my-6"> No Items added yet.. </h2>
+            <h2 class="text-lg my-6"> I haven't added any items added yet.. </h2>
     {% endif %}   
+
+<h2 class="text-lg font-bold my-2"> Items I'm Borrowing: </h2>
+{% if borrowed_items %}
+            <div class = "flex flex-wrap mt-2 items-center justify-around">
+                {% for item in borrowed_items %}
+                    {% include 'store/item_grid2.html' %}
+                {% endfor %}  
+            </div>
+  {% else %}
+        <h2 class="text-lg my-6"> I don't have any borrowed items added yet.. </h2>
+{% endif %} 
+
 
 {% endblock %}   

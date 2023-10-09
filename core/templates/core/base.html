@@ -49,7 +49,7 @@
                             <label tabindex="0" class="btn btn-sm ">categories</label>
                             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-32">
                                 {% for category in categories %} 
-                                <li><a href="{% url 'category_detail' category.slug %}" class="text-base font-bold text-teal-600 text-center"> {{category.title}} </a></li>
+                                <li><a href="{% url 'category_detail' category.slug %}" class="text-sm font-bold text-teal-600 text-center"> {{category.title}} </a></li>
                                 {% endfor %}
                             </ul>
                         </div>
@@ -83,7 +83,7 @@
                         <label tabindex="0" class="btn btn-sm inline-flex sm:hidden"><i class="fa fa-bars text-lg"></i>
                         </label>
 
-                        <ul tabindex="0"  class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-32 text-base font-bold text-teal-600 text-center">
+                        <ul tabindex="0"  class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-32 text-sm font-bold text-teal-600 text-center">
                         
                             <a href="{% url 'my_inventory' %}">My Inventory</a>
                     

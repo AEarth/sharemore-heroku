@@ -4,6 +4,14 @@
 
 {% block content %}
 
-{% include 'store/item_grid2.html' %}
+{% if items %}
+    <div class = "flex flex-wrap mt-2 items-center justify-around">
+        {% for item in items %}
+            {% include 'store/item_grid2.html' %}
+        {% endfor %}
+    </div>
+{% else %}
+<h2 class="text-lg my-6"> Nobody has added a single item to the site yet :'( </h2>
+{% endif %}   
 
 {% endblock %}

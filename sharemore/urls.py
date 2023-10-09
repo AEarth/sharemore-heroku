@@ -6,12 +6,14 @@ from django.urls import path, include
 from core.views import frontpage, about, base #FrontpageView, AboutView
 
 urlpatterns = [
+    path("__debug__/", include("debug_toolbar.urls")),
     path('about/', about, name='about'),
     path('admin/', admin.site.urls),
     path('base/', base, name='base'),
     path('', include('userprofile.urls')),
     path('', include('store.urls')),
     path('', frontpage, name='frontpage'),
+
 
 ]
 #if settings.DEBUG:

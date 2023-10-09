@@ -5,82 +5,162 @@
 {% block title %}Requests{% endblock %}
 
 {% block content %}
-    <h1 class="text-2xl text-center font-bold my-2"> All Share Requests </h1>
-    {% if my_requests %}
-            <h2 class="text-lg font-bold my-2"> My Requests to others: </h2>
-            {% for request in my_requests.all %}
+    {% comment %} <h1 class="text-2xl text-center font-bold my-2"> All Share Requests </h1>
+   {% endcomment %}
 
-               <b>Status: </b> {{request.get_status_display}}
 
-                <div class = "flex flex-wrap mt-2 items-center justify-around">
-                    <span><b>Pickup: </b> {{request.pickup_date}} -  <b>Return: </b>{{request.return_date}}</span>
-                </div>
-
-                    {% for item in request.request_items.item%}
-                        
-                        <div class = "flex flex-wrap mt-2 items-center justify-around">
-                            <li>  {{item.item.title}} </li>
+        <div class="overflow-x-auto">
+            <table class="table">
+                <h1 class="text-lg font-bold my-2 text-center">Status of My Requests to Others:</h1>
+            <thead>
+                <tr>
+                <th>User</th>
+                <th>Item</th>
+                <th class="text-center">Dates</th>
+                <th class="text-center">Status</th>
+                <th></th>
+                </tr>
+            </thead>
+    {% if my_requests_and_forms %}
+        {% for lendrequest, form in my_requests_and_forms %}
+    
+                <tbody>
+                    <!-- row 1 -->
+                    <tr>
+                    <td>
+                        <div class="flex items-center space-x-3">
+                        <div class="avatar">
+                            <div class="mask mask-circle w-12 h-12">
+                            <img src={{ lendrequest.giver.userprofile.thumbnail.url }}/>
+                            </div>
                         </div>
-                   
-                    {% endfor %}
-            {% endfor %}
-    {% else %}
-            <h2 class="text-lg my-6"> You didn't make any requests yet.. </h2>
-    {% endif %}   
-
-
-    {% if recieve_confirm_and_forms %}
-        {% for request, form in recieve_confirm_and_forms %}
-            <p> {{request.requester}} asked for item from {{ request.giver }} request status is currently {{ request.workflow_state }} </p>
-            <form method="post">
-                {% csrf_token %}
-                    {{ form.workflow_state }}         
-                <button class = "btn btn-primary btn-sm m-6" type="submit">Update</button>
-            </form>
-        {% endfor %}
-
-    {% else %}
-        <h2 class="text-lg my-6"> You didn't make any requests yet.. </h2>
-    {% endif %}                         
+                        <div>
+                            <div class="font-bold">{% firstof lendrequest.giver.get_full_name lendrequest.giver.username %} </div>
+                        </div>
+                        </div>
+                    </td>
+                    <td>
+                        {% for item in lendrequest.request_items.all %}
+                        <div class="flex items-center space-x-3">
+                        <div class="avatar">
+                            <div class="mask mask-squircle w-12 h-12">
+                            <img src={{ item.item.thumbnail.url }} alt={{ item.item.title }} />
+                            </div>
+                        </div>
+                        <div>
+                        
+                            <div class="font-bold">{{ item.item.title }}</div>
+                            <div class="text-sm opacity-50">{{ item.item.description }}</div>
+                        </div>
+                        </div>
+                        {% endfor %}
+                    </td>
+                    <td class="text-center">
+                            {{ lendrequest.pickup_date|date:"M d" }} - {{ lendrequest.return_date|date:"M d" }}
         
+                    </td>
+                    <td class="text-center">
+{{lendrequest.giver.username}} {{ lendrequest.workflow_state }} your request
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_prefix" value="{{ form.prefix }}"> 
+                                
+                    
+                                {{ form.workflow_state }}
+                                                        
+                                <button class = "btn btn-primary btn-sm m-6" type="submit" name="{{form.prefix}}">Update</button>
+                            </form>
 
-    {% if requests_and_forms %}
-            <h2 class="text-lg font-bold my-2"> My Items Requested to Share: </h2>
+                    </td>
+                    <th>
 
-            {% comment %} {% for their_request in their_requests.all %} {% endcomment %}
-
-                {% for request, form in requests_and_forms %}
-                    {% for item in request.request_items.all|filter_myitems:user %}
-                    <div class = "flex flex-wrap items-start mt-2 justify-around">
-                        <li>  {{item.item.title}} </li>
-                    </div>
-                    {% endfor %} 
-                    <form method="post">
-                        {% csrf_token %}
-                            {{ form.as_p }}          
-                        {% comment %} {{form.status}}
-                        {{form.pickup_date}}
-                        {{form.return_date}} {% endcomment %}
-                        <button class = "btn btn-primary btn-sm m-6" type="submit">Update</button>
-                        {% comment %} {{ form.as_p }} {% endcomment %}
-     
-                       
-                    </form>
+                    </th>
+                    </tr>                    
                 {% endfor %}
-
-            {% comment %} <b>Status: </b> {{their_request.get_status_display}}
-            <div class = "flex flex-wrap mt-2 items-center justify-around">
-                <span><b>Pickup: </b> {{their_request.pickup_date}} -  <b>Return: </b>{{their_request.return_date}}</span>
-            </div>
-           
-         {% endcomment %}
-        {% comment %} {% endfor %} {% endcomment %}
+    {% else %}
+        <tr>
+            <td colspan="5" class="text-center">No requests to others</td>
+        </tr>
+    {% endif %}
 
 
+
+<div class="overflow-x-auto">
+    <table class="table">
+        <h1 class="text-lg font-bold my-2 text-center">Respond to Share Requests Sent to Me:</h1>
+        <thead>
+        <tr>
+            <th>User</th>
+            <th>Item</th>
+            <th class="text-center">Dates</th>
+            <th class="text-center">Status</th>
+            <th></th>
+        </tr>
+        </thead>
+        {% if their_pending_request_approval_forms %}
+
+        {% for lendrequest, form in their_pending_request_approval_forms %}
+
+                <tbody>
+                <!-- row 1 -->
+                <tr>
+                    <td>
+                    <div class="flex items-center space-x-3">
+                        <div class="avatar">
+                        <div class="mask mask-circle w-12 h-12">
+                            <img src={{ lendrequest.requester.userprofile.thumbnail.url }}/>
+                        </div>
+                        </div>
+                        <div>
+                        <div class="font-bold">{% firstof lendrequest.requester.get_full_name lendrequest.requester.username %} </div>
+                        </div>
+                    </div>
+                    </td>
+                    <td>
+                    {% for item in lendrequest.request_items.all %}
+                    <div class="flex items-center space-x-3">
+                        <div class="avatar">
+                        <div class="mask mask-squircle w-12 h-12">
+                            <img src={{ item.item.thumbnail.url }} alt={{ item.item.title }} />
+                        </div>
+                        </div>
+                        <div>
+                        
+                        <div class="font-bold">{{ item.item.title }}</div>
+                        <div class="text-sm opacity-50">{{ item.item.description }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    </td>
+                    <td class="text-center">
+                        {{ lendrequest.pickup_date|date:"M d" }} - {{ lendrequest.return_date|date:"M d" }}
         
-        {% else %}
-            <h2 class="text-lg my-6"> You didn't make any requests yet.. </h2>
-    {% endif %}   
+                    </td>
+                    <td class="text-center">
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="form_prefix" value="{{ form.prefix }}"> 
+                            
+                    
+                            {{ form.workflow_state }}
+                                                        
+                            <button class = "btn btn-primary btn-sm m-6" type="submit" name="{{form.prefix}}">Update</button>
+                        </form>
+
+                    </td>
+                    <th>
+
+                    </th>
+                </tr>
+                  
+    {% endfor %}
+
+    {% else %}
+    <tr>
+        <td colspan="5" class="text-center">No lend requests from others</td>
+    </tr>
+
+{% endif %}
 
 {% endblock %}   
 

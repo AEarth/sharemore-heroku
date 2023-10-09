@@ -1,0 +1,93 @@
+form.py
+class LendApproveForm(forms.ModelForm):
+    # workflow_state = forms.FSMField()
+    class Meta:
+        model = LendRequest
+        fields = ('status', 'workflow_state', 'pickup_date', 'return_date') 
+        widgets = {
+            'status': forms.HiddenInput(),
+            'workflow_state': forms.Select(attrs=
+                {
+                'class': 'm-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-32 hidden-label'
+                }),
+            'pickup_date' : DateWidget,
+            'return_date' : DateWidget,
+        }
+        
+    def __init__(self, *args, **kwargs):
+        super(LendApproveForm, self).__init__(*args, **kwargs)
+        # LendApproveForm, self
+        #instance = kwargs.get('instance', None)
+        #self.fields['workflow_state'] = forms.ChoiceField(choices=get_choices())
+        self.fields['status'] = forms.ChoiceField(choices=get_status_choices())
+        #available_transitions = self.instance.get_available_workflow_state_transitions()
+        #self.fields['workflow_state'] = forms.ChoiceField(choices=available_transitions)
+        #limited_choices = [(CHOICES[0]), (CHOICES[1])]
+        #self.fields['workflow_state'].choices = limited_choices
+        #self.fields['status'].choices = [('p', 'Pending')]
+        
+        #= forms.ChoiceField(choices=limited_choices)
+        instance = kwargs.get('instance')
+        if instance:
+            # Get available transitions for the current state
+            available_transitions = instance.get_available_workflow_state_transitions()
+            limited_choices = [(t.target, t.target) for t in available_transitions]
+            
+            # Update the field's choices
+            self.fields['workflow_state'] = forms.ChoiceField(choices=limited_choices)
+    
+    
+    
+    template.html
+    {% if recieve_confirm_and_forms %}
+        {% for request, form in recieve_confirm_and_forms %}
+            <p> {{request.requester}} asked for item from {{ request.giver }} request status is currently {{ request.workflow_state }} </p>
+            <form method="post">
+                {% csrf_token %}
+                    {{ form.workflow_state }}         
+                <button class = "btn btn-primary btn-sm m-6" type="submit">Update</button>
+            </form>
+        {% endfor %}
+
+    {% else %}
+        <h2 class="text-lg my-6"> You didn't make any requests yet.. </h2>
+    {% endif %}                         
+        
+
+    {% if requests_and_forms %}
+            <h2 class="text-lg font-bold my-2"> My Items Requested to Share: </h2>
+
+            {% comment %} {% for their_request in their_requests.all %} {% endcomment %}
+
+                {% for request, form in requests_and_forms %}
+                    {% for item in request.request_items.all|filter_myitems:user %}
+                    <div class = "flex flex-wrap items-start mt-2 justify-around">
+                        <li>  {{item.item.title}} </li>
+                    </div>
+                    {% endfor %} 
+                    <form method="post">
+                        {% csrf_token %}
+                            {{ form.as_p }}          
+                        {% comment %} {{form.status}}
+                        {{form.pickup_date}}
+                        {{form.return_date}} {% endcomment %}
+                        <button class = "btn btn-primary btn-sm m-6" type="submit">Update</button>
+                        {% comment %} {{ form.as_p }} {% endcomment %}
+     
+                       
+                    </form>
+                {% endfor %}
+
+            {% comment %} <b>Status: </b> {{their_request.get_status_display}}
+            <div class = "flex flex-wrap mt-2 items-center justify-around">
+                <span><b>Pickup: </b> {{their_request.pickup_date}} -  <b>Return: </b>{{their_request.return_date}}</span>
+            </div>
+           
+         {% endcomment %}
+        {% comment %} {% endfor %} {% endcomment %}
+
+
+        
+        {% else %}
+            <h2 class="text-lg my-6"> You didn't make any requests yet.. </h2>
+    {% endif %}   

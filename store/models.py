@@ -70,13 +70,16 @@ class LendRequest(models.Model):
         return self.request_items.aggregate(sum=Sum('quantity'))['sum'] or 0
     
     def __str__(self):
-        if self.status == 'a':
+        if self.workflow_state == WorkflowState.APPROVED:
             return f"{self.giver} approved your request"
         
-        elif self.status == 'd':
+        elif self.workflow_state == WorkflowState.DENIED:
             return f"{self.giver} denied your request"
         
-        elif self.status == 'p':
+        elif self.workflow_state == WorkflowState.PENDING:
+            return f"{self.requester} requested {self.item_count()} item(s)"
+        
+        else:
             return f"{self.requester} requested {self.item_count()} item(s)"
     
     # # some copy/paste on getting the user in models.py

@@ -5,7 +5,7 @@ from django.contrib import admin
 from .models import Category, Item, LendRequest, RequestItems
 
 admin.site.register(Category)
-admin.site.register(Item)
+
 admin.site.register(RequestItems)
 
 
@@ -16,4 +16,8 @@ class RequestItemsInline(admin.TabularInline):
 @admin.register(LendRequest)
 class LendRequestAdmin(admin.ModelAdmin):
     inlines = (RequestItemsInline,)
-    list_display = ('requester', 'giver', 'status', 'created_at', 'pickup_date', 'return_date')
+    list_display = ('requester', 'giver', 'workflow_state', 'created_at', 'pickup_date', 'return_date')
+    
+@admin.register(Item)
+class ItemAdmin(admin.ModelAdmin):
+    list_display = ('title', 'category', 'user')

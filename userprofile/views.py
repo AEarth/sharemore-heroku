@@ -6,70 +6,99 @@ from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
 from django.contrib import messages
 
+from django.db.models import Q
+
 from django import forms
 
 
 from .models import Userprofile
 from store.forms import ItemForm
-from store.models import Item, LendRequest, WorkflowState
+from store.models import Item, LendRequest, WorkflowState, RequestItems
 
 from core.context_processors import navigation
 
 from .forms import UserprofileForm
 
-from store.forms import LendApproveForm
+from store.forms import LendApproveForm, LendStatusUpdateForm
 
 @login_required
 def request_detail(request):
-    my_requests = LendRequest.objects.filter(requester=request.user)
-    their_requests = LendRequest.objects.filter(giver=request.user)
+    my_requests = LendRequest.objects.filter(requester=request.user, workflow_state=WorkflowState.PENDING)
+    their_requests = LendRequest.objects.filter(giver=request.user, workflow_state=WorkflowState.PENDING)
+         
     
     if request.method == 'POST':
-        #this form is to approve and possibly adjust dates on a request.
-        for their_request in their_requests:
-            if their_request.workflow_state == WorkflowState.PENDING:
-                their_pending_approval_request = their_request
-                approval_form = LendApproveForm(request.POST, prefix=str(their_pending_approval_request.id), instance=their_pending_approval_request)
+        # before trying to get instance from database ensure prefix value from post request is valid
+        form_prefix = request.POST.get('form_prefix')
+        if form_prefix:
+            try:
+                instance = LendRequest.objects.get(pk=form_prefix)
+                approval_form = LendStatusUpdateForm(request.POST, prefix=form_prefix, instance=instance)
+ 
+                        
                 if approval_form.is_valid():
-                    approval_form.save()
+                    approval_form.save() #update_fields=['workflow_state', 'status']
                     return redirect('request_detail')
+                else:
+                    print("form invalid")
+    
+            except LendRequest.DoesNotExist:
+                print(f"LendRequest with pk={form_prefix} does not exist.")
+        else:
+            print("No form prefix provided.")
+
+    #this form is to approve and possibly adjust dates on a request.
+
+        
+        if form_prefix in request.POST:
+            approval_form_post = LendStatusUpdateForm(request.POST, prefix=request.POST.get('form_prefix'), instance=LendRequest.objects.get(pk=request.POST.get('form_prefix')))
+        
+        #approval_form = LendApproveForm(request.POST, prefix=str(their_pending_approval_request.id), instance=their_pending_approval_request)
+            if approval_form.is_valid():
+                print("form is valid")
+                approval_form_post.save(update_fields=['workflow_state', 'status'])
+                return redirect('request_detail')
+            else:
+                print("form invalid")
                     
-        #this form is to confirm the requested item has been received. dates are hidden. 
-        for my_request in my_requests:
-            if my_request.workflow_state == WorkflowState.APPROVED:
-                my_recieve_confirm_request = my_request
-                recieve_confirm_form = LendApproveForm(request.POST, prefix=str(my_recieve_confirm_request.id), instance=my_recieve_confirm_request)
-                recieve_confirm_form.fields['status'].widget = forms.HiddenInput()
-                #recieve_confirm_form['pickup_date'].attrs['readonly'] = True
-                #recieve_confirm_form['return_date'].attrs['readonly'] = True
-                if recieve_confirm_form.is_valid():
-                    recieve_confirm_form.save()
-                    return redirect('request_detail')            
+    
 
             return redirect('request_detail')
     else:
-        form = LendApproveForm() 
+        print('request.method wasnt post I guess?')
+        form = LendApproveForm()
         
-    approval_forms = [LendApproveForm(prefix=str(their_pending_approval_request.id), instance=their_pending_approval_request) for their_pending_approval_request in their_requests]
+    their_pending_requests = LendRequest.objects.filter(giver=request.user, workflow_state=WorkflowState.PENDING)
+         
+    approval_forms = [LendStatusUpdateForm(prefix=str(their_pending_approval_request.id), instance=their_pending_approval_request) for their_pending_approval_request in their_pending_requests]
+ 
     
-    recieve_confirm_forms = [LendApproveForm(prefix=str(my_recieve_confirm_request.id), instance=my_recieve_confirm_request) for my_recieve_confirm_request in my_requests]
+    my_requests = LendRequest.objects.filter(
+        Q(requester=request.user, workflow_state=WorkflowState.PENDING) |
+        Q(requester=request.user, workflow_state=WorkflowState.APPROVED)
+    )
+    my_request_forms = [LendStatusUpdateForm(prefix=str(my_request.id), instance=my_request) for my_request in my_requests]
     
     
     context = {
-        'my_requests': my_requests,
-        'approval_forms': approval_forms,
-        'recieve_confirm_forms': recieve_confirm_forms,
-        'approval_requests_and_forms': zip(my_requests, approval_forms),
-        'recieve_confirm_and_forms': zip(their_requests, recieve_confirm_forms),
+        'my_requests_and_forms': zip(my_requests,my_request_forms),
+        'their_pending_request_approval_forms': zip(their_pending_requests, approval_forms),
     }
+    
+    print("All Context:", context)
+    print("their_pending_request_approval_forms:", list(zip(their_pending_requests, approval_forms)))
+        
+    
     return render(request, 'userprofile/request_details.html', context)
+
+
 
 @login_required
 def request_strings(request):
         
-    approved_string = LendRequest.objects.filter(requester=request.user, status='a')
-    denied_string = LendRequest.objects.filter(requester=request.user, status='d')
-    pending_string = LendRequest.objects.filter(giver=request.user, status='p')
+    approved_string = LendRequest.objects.filter(requester=request.user, workflow_state=WorkflowState.APPROVED)
+    denied_string = LendRequest.objects.filter(requester=request.user, workflow_state=WorkflowState.DENIED)
+    pending_string = LendRequest.objects.filter(giver=request.user, workflow_state=WorkflowState.PENDING)
     
     context = {
         'approved_string': approved_string,
@@ -81,9 +110,9 @@ def request_strings(request):
 @login_required
 def request_count_bell(request):
     
-    approved_count = LendRequest.objects.filter(requester=request.user, status='a').count()
-    denied_count = LendRequest.objects.filter(requester=request.user, status='d').count()
-    pending_count = LendRequest.objects.filter(giver=request.user, status='p').count()
+    approved_count = LendRequest.objects.filter(requester=request.user, workflow_state=WorkflowState.APPROVED).count()
+    denied_count = LendRequest.objects.filter(requester=request.user, workflow_state=WorkflowState.DENIED).count()
+    pending_count = LendRequest.objects.filter(giver=request.user, workflow_state=WorkflowState.PENDING).count()
     
     all_count = approved_count + denied_count + pending_count
 
@@ -180,8 +209,24 @@ def my_inventory(request):
     user = request.user
     items = request.user.items.exclude(is_deleted=True).all()
     
+    # my_received_requests = LendRequest.objects.filter(requester=user, workflow_state=WorkflowState.RECEIVED)
+    # borrowed_items=[]
+    # for request in my_received_requests:
+    #     for request_item in request.request_items.all():
+    #         borrowed_items.append(request_item.item)
+    
+    # IDs of items borrowed by the user
+    borrowed_item_ids = RequestItems.objects.filter(
+        lend_request__requester=user,
+        lend_request__workflow_state=WorkflowState.RECEIVED
+    ).values_list('item_id', flat=True)
+
+    # Construct a queryset of borrowed items
+    borrowed_items = Item.objects.filter(id__in=borrowed_item_ids)
+    
     context = {
      'items': items,
+     'borrowed_items': borrowed_items,
     }
     return render(request, 'userprofile/my_inventory.html', context)
 

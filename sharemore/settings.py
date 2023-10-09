@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     'store',
     'django_htmx',
     'django_fsm',
-    'django_extensions'
+    'django_extensions',    
     # 'simple_deploy', 
 ]
 
@@ -78,8 +78,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
      "django_htmx.middleware.HtmxMiddleware",
-]
+}     
 
+if enviro_set == 'local':
+    MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
+    INSTALLED_APPS += ["debug_toolbar"]
 
 
 

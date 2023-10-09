@@ -35,7 +35,6 @@ def get_status_choices():
     return [('p', 'Pending'),('d', 'Denied')]
 
 class LendApproveForm(forms.ModelForm):
-    # workflow_state = forms.FSMField()
     class Meta:
         model = LendRequest
         fields = ('status', 'workflow_state', 'pickup_date', 'return_date') 
@@ -51,17 +50,34 @@ class LendApproveForm(forms.ModelForm):
         
     def __init__(self, *args, **kwargs):
         super(LendApproveForm, self).__init__(*args, **kwargs)
-        # LendApproveForm, self
-        #instance = kwargs.get('instance', None)
-        #self.fields['workflow_state'] = forms.ChoiceField(choices=get_choices())
         self.fields['status'] = forms.ChoiceField(choices=get_status_choices())
-        #available_transitions = self.instance.get_available_workflow_state_transitions()
-        #self.fields['workflow_state'] = forms.ChoiceField(choices=available_transitions)
-        #limited_choices = [(CHOICES[0]), (CHOICES[1])]
-        #self.fields['workflow_state'].choices = limited_choices
-        #self.fields['status'].choices = [('p', 'Pending')]
+
+    
+        instance = kwargs.get('instance')
+        if instance:
+            # Get available transitions for the current state
+            available_transitions = instance.get_available_workflow_state_transitions()
+            limited_choices = [(t.target, t.target) for t in available_transitions]
+            
+            # Update the field's choices
+            self.fields['workflow_state'] = forms.ChoiceField(choices=limited_choices)
+
+            
+class LendStatusUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = LendRequest
+        fields = ('workflow_state',) 
+        widgets = {
+            'workflow_state': forms.Select(attrs=
+                {
+                'class': 'm-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-32 hidden-label'
+                }),
+        }
         
-        #= forms.ChoiceField(choices=limited_choices)
+    def __init__(self, *args, **kwargs):
+        super(LendStatusUpdateForm, self).__init__(*args, **kwargs)
+
         instance = kwargs.get('instance')
         if instance:
             # Get available transitions for the current state
