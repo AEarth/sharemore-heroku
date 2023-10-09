@@ -15,5 +15,5 @@ django-extensions==3.2.3
 django-threadlocals==0.10
 
 #django widget tweaks?
-psycopg2                      # Added by simple_deploy command.
+psycopg2==2.9.6                    # Added by simple_deploy command.
 dj-database-url               # Added by simple_deploy command.
