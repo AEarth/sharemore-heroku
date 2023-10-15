@@ -1,10 +1,10 @@
-django
+django==4.2.5
 #django-compressor
 #django-allauth
 #mysqlclient
 #psycopg2-binary
-gunicorn
-whitenoise
+gunicorn==21.2.0
+whitenoise==6.5.0
 Pillow==10.0.0
 django-htmx==1.16.0
 #django-simple-deploy
@@ -13,6 +13,8 @@ django-environ
 django-fsm==2.8.1
 django-extensions==3.2.3
 django-threadlocals==0.10
+django-debug-toolbar==4.2.0
+
 
 #amazon s3 storages
 django-storages==1.14.2 # alternatively django-storages[s3]
