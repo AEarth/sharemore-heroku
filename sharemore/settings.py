@@ -91,8 +91,8 @@ if ENVIRO_SET == 'local':
     MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
     INSTALLED_APPS += ["debug_toolbar"]
     print("Running Local Apps")
-    INSTALLED_APPS.insert(4,'livereload')
-    MIDDLEWARE += ['livereload.middleware.LiveReloadScript',]
+    #INSTALLED_APPS.insert(4,'livereload')
+    #MIDDLEWARE += ['livereload.middleware.LiveReloadScript',]
     
 
 
