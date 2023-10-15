@@ -14,6 +14,10 @@ django-fsm==2.8.1
 django-extensions==3.2.3
 django-threadlocals==0.10
 
+#amazon s3 storages
+django-storages==1.14.2 # alternatively django-storages[s3]
+boto3==1.28.63
+
 #django widget tweaks?
 psycopg2==2.9.6                    # Added by simple_deploy command.
 dj-database-url               # Added by simple_deploy command.

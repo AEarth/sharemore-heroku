@@ -18,7 +18,7 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-ENVIRO_SET = 'local'
+ENVIRO_SET = ''#'local'
 
 env = environ.Env(
     # set casting, default value
@@ -134,22 +134,16 @@ WSGI_APPLICATION = 'sharemore.wsgi.application'
 #     }
 # }
 
-import dj_database_url
-DATABASE_URL = os.environ['DATABASE_URL']
-DATABASES = {}
-DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
-
-# #manual set database (e.g. railway or aws)
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': os.environ["PGDATABASE"], 
-#         'USER': os.environ["PGUSER"],
-#         'PASSWORD': os.environ["PGPASSWORD"],
-#         'HOST': os.environ["PGHOST"],
-#         'PORT': os.environ["PGPORT"],
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ["PGDATABASE"],
+        'USER': os.environ["PGUSER"],
+        'PASSWORD': os.environ["PGPASSWORD"],
+        'HOST': os.environ["PGHOST"],
+        'PORT': os.environ["PGPORT"],
+    }
+}
 
 
 
@@ -188,7 +182,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 
-#S3 settings, using amazon s3 and django-storages to handle user uploaded media files
+#S3 settings
 USE_S3 = True
 
 if USE_S3:
@@ -202,18 +196,15 @@ if USE_S3:
     # aws public settings
     AWS_S3_REGION_NAME = 'us-east-1'
     # s3 static settings
-    AWS_LOCATION = 'media'
-    #STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
+    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
     MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
-    #STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage' #conflicts with storages at 4.2
 
-
-STATIC_URL = '/staticfiles/'
-STATIC_ROOT = BASE_DIR / 'collected-static' #where collectstatic ends up
-
-#MEDIA_URL = '/mediafiles/'
-MEDIA_ROOT = BASE_DIR / 'collected-media/' #local or heroku setting
-#MEDIA_ROOT = os.environ["RAILWAY_VOLUME_MOUNT_PATH"] #railway setting
+else:
+    STATIC_URL = '/staticfiles/'
+    STATIC_ROOT = BASE_DIR / 'collected-static' #where collectstatic ends up
+    MEDIA_URL = '/mediafiles/'
+    MEDIA_ROOT = BASE_DIR / 'collected-media/' #local or heroku setting
+    #MEDIA_ROOT = os.environ["RAILWAY_VOLUME_MOUNT_PATH"] #railway setting
     
 STATICFILES_DIRS = [BASE_DIR / "static"]  #provides additional directories for collectstatic to look for static files
 
@@ -233,7 +224,6 @@ STORAGES = {
         "OPTIONS":{
         },
     },
-    
 
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
@@ -260,17 +250,16 @@ INTERNAL_IPS = [
 ]
 
 
+import os
 if 'ON_HEROKU' in os.environ:
     ALLOWED_HOSTS.append('sharemore1-*.herokuapp.com')
-    import dj_database_url
-    DATABASE_URL = os.environ['DATABASE_URL']
+    #import dj_database_url
     #DATABASES = {'default': dj_database_url.config(default='postgres://localhost')}
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
     STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-    #STATIC_URL = '/static/'
-    #STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
-    #i = MIDDLEWARE.index("django.middleware.security.SecurityMiddleware")
-    #MIDDLEWARE.insert(i + 1, "whitenoise.middleware.WhiteNoiseMiddleware")
+    STATIC_URL = '/static/'
+    STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+    i = MIDDLEWARE.index("django.middleware.security.SecurityMiddleware")
+    MIDDLEWARE.insert(i + 1, "whitenoise.middleware.WhiteNoiseMiddleware")
     DEBUG = os.getenv('DEBUG') == 'TRUE'
     SECRET_KEY = os.getenv('SECRET_KEY')
 

@@ -39,13 +39,16 @@ class Userprofile(models.Model):
                 super().save(*args, **kwargs)
             else:
                 super().save(*args, **kwargs)
-        #if if create
+        #if create
         if self.pk is None and self.image:
             self.thumbnail = self.make_thumbnail(self.image)
             print(f"created thumbnail {self.thumbnail}")
             self.image_med = self.make_thumbnail(self.image, size=(300,300))
             print(f"created medium img {self.image_med}")
             super().save(*args, **kwargs)
+        else:
+            super().save(*args, **kwargs)
+
         
     
     def make_thumbnail(self, image, size=(75,75)):
