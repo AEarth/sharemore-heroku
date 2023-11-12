@@ -12,10 +12,20 @@
  <title> {% block title %} {% endblock %} | Sharemore </title>
 
 
+ {% comment %} TAILWIND USE FOR PRODUCTION {% endcomment %}
+ {% comment %} {% load compress %} {% endcomment %}
+ {% comment %} {% compress css %} {% endcomment %}
+ {% comment %} <link rel="stylesheet" href="{% static 'src/output.css' %}">  {% endcomment %}
+ {% comment %} {% endcompress %} {% endcomment %}
+
+ {% comment %} TAILWIND USE FOR DEVELOPMENT {% endcomment %}
+  <script src="https://cdn.tailwindcss.com"></script>
+
+
 {% comment %} <script src="https://unpkg.com/htmx.org/dist/ext/remove-me.js"></script> {% endcomment %}
 
   <link href="https://cdn.jsdelivr.net/npm/daisyui@3.6.4/dist/full.css" rel="stylesheet" type="text/css" />
-  <script src="https://cdn.tailwindcss.com"></script>
+
   {% comment %} <script src="https://unpkg.com/htmx.org@1.7.0/dist/htmx.js"></script> {% endcomment %}
   <script src="https://unpkg.com/htmx.org/dist/ext/debug.js"></script>
 
@@ -26,7 +36,7 @@
   {% comment %} <link rel="stylesheet" href="https://rsms.me/inter/inter.css"> {% endcomment %}
 
 </head>
-<body>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 
 
     <nav class = "max-w-5xl mx-auto p-2 flex justify-between items-center bg-teal-600"> 
@@ -36,9 +46,14 @@
         </div> 
     </a>
 
-                 <form method="get" action="/search/" class="w-1/2 translate-y-1/4">   
+            <form method="get" action="." class="w-1/2 translate-y-1/4">   
+                    <input type="search" name="search" method ="get" id="default-search" class="input-sm input-bordered rounded-lg w-full sm:w-full" placeholder="Search..">
+            </form>
+
+
+                 {% comment %} <form method="get" action="/search/" class="w-1/2 translate-y-1/4">   
                         <input type="search" name="query" method ="get" id="default-search" class="input-sm input-bordered rounded-lg w-full sm:w-full" placeholder="Search">
-                </form>
+                </form> {% endcomment %}
 
             <div class="flex sm:justify-end justify-between items-center ">
                 <span>

@@ -1,5 +1,5 @@
-{% comment %} {% extends 'core/base.html' %} {% endcomment %}
-
+{% extends 'core/base.html' %}
+{% load static %}
 
 {% block title %} About {% endblock %}
 
@@ -10,5 +10,11 @@
 {% comment %} <a hx-get="{% url 'about' %}"> HTMX Link to My Account </a> {% endcomment %}
 
 <p>{% include 'core/partials/request_count_bell.html' %}</p>
+
+
+<h1 class="text-blue-900 font-extrabold">Hello world</h1>
+<img src={% static 'images/hi.jpg' %}"/>
+
+
 
 {% endblock %}

@@ -1,5 +1,4 @@
 django==4.2.5
-#django-compressor
 #django-allauth
 #mysqlclient
 #psycopg2-binary
@@ -14,6 +13,9 @@ django-fsm==2.8.1
 django-extensions==3.2.3
 django-threadlocals==0.10
 django-debug-toolbar==4.2.0
+
+django-compressor==4.4
+django-tailwind==3.6.0
 
 
 #amazon s3 storages

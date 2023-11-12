@@ -3,15 +3,67 @@
 {% block title %} Welcome {% endblock %}
 
 {% block content %}
+<span class="isolate inline-flex rounded-md shadow-sm">
 
-{% if items %}
-    <div class = "flex flex-wrap mt-2 items-center justify-around">
-        {% for item in items %}
-            {% include 'store/item_grid2.html' %}
-        {% endfor %}
+
+    <form id="gridview"
+        hx-post="{% url 'frontpage' %}"
+        {% comment %} action="" {% endcomment %}
+        hx-target="#item-grid"
+        hx-swap="innerHTML transition:true"
+    >
+        {% csrf_token %}
+        <input type="hidden" name="search" value="{{ request.GET.search }}">
+        <button name="gridview" type="submit"
+
+            class="relative -ml-px inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
+                
+            <i class="fa-solid fa-grip-vertical"></i>
+                <p class="text-align right pl-1"> 
+                    Grid
+                </p>
+        </button>
+    </form>
+
+
+    <form id="listview"
+        hx-post="{% url 'frontpage' %}"
+        {% comment %} action="" {% endcomment %}
+        hx-target="#item-grid"
+        hx-swap="innerHTML transition:true"
+    >
+        {% csrf_token %}
+        <input type="hidden" name="search" value="{{ request.GET.search }}">
+        <button name="listview" type="submit"
+            
+            class="relative inline-flex items-center  bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
+            
+            <i class="fa-solid fa-list-ul"></i>
+                <p class="text-align right pl-1"> 
+                    List
+                </p>
+        </button>
+    </form>
+        
+        
+   
+    <button type="button" class="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
+        <i class="fa-solid fa-map-location-dot"></i>
+        <p class="text-align right pl-1"> 
+            Map
+        </p>
+    </button>
+  </span>
+
+    <div id = "item-grid">
+        {% if items %}
+        {% include 'store/item_grid.html' %}
+
     </div>
+</div>
+
 {% else %}
-<h2 class="text-lg my-6"> Nobody has added a single item to the site yet :'( </h2>
+<h2 class="text-lg my-6"> Nobody items match this criteria ( </h2>
 {% endif %}   
 
 {% endblock %}

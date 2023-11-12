@@ -1,0 +1,13 @@
+{% extends 'core/base.html' %}
+
+{% block title %} {% firstof item.user.get_full_name user.username %} {% endblock %}
+
+{% block content %}
+
+<h1 class="text-5xl font-bold">
+    {% firstof item.user.get_full_name user.username %} 
+</h1>
+
+{% include 'store/item_grid.html' %}
+
+{% endblock %}

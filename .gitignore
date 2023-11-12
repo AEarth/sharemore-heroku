@@ -6,4 +6,6 @@ simple_deploy_logs/
 .idea
 .env
 static_local/
+collected-static/
+node_modules
 #static_prod/

@@ -1,16 +1,16 @@
-from store.models import Item, Category, LendRequest
-from userprofile.models import Userprofile
-
 from django.contrib.auth.decorators import login_required
+
+from store.models import Category, Item, LendRequest
+from userprofile.models import Userprofile
 
 
 def navigation(request):
-        context = {}
-        if 'items' not in context:
-                context['items'] = Item.objects.filter(is_deleted=False)[0:6]
-        context['categories'] = Category.objects.all()
-        context['users'] = Userprofile.objects.all()
-        return context
+    context = {}
+    # if 'items' not in context:
+    #     context['items'] = Item.objects.filter(is_deleted=False)[0:6]
+    context['categories'] = Category.objects.all()
+    context['users'] = Userprofile.objects.all()
+    return context
 
 
 

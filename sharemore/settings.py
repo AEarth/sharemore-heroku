@@ -67,11 +67,17 @@ INSTALLED_APPS = [
     'django_htmx',
     'django_fsm',
     'django_extensions',
-    'storages',    
+    'storages',
+    'compressor',
+    # 'tailwind',
+    # 'theme',    
     # 'simple_deploy', 
 ]
 
-# NPM_BIN_PATH = r"C:\Users\Arthur\AppData\Roaming\npm"
+# TAILWIND_APP_NAME = 'theme'
+
+#NPM_BIN_PATH = r"C:\Users\Arthur\AppData\Roaming\npm"
+NPM_BIN_PATH = r"C:\Program Files\nodejs\node_modules\npm\bin\npm.cmd"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -208,8 +214,8 @@ if USE_S3:
     #STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage' #conflicts with storages at 4.2
 
 
-STATIC_URL = '/staticfiles/'
-STATIC_ROOT = BASE_DIR / 'collected-static' #where collectstatic ends up
+STATIC_URL = '/staticfiles/' #url to use when referring to static files located in STATIC_ROOT
+STATIC_ROOT = BASE_DIR / 'collected-static' #asbsolute path where collectstatic collects static files for deployment
 
 #MEDIA_URL = '/mediafiles/'
 MEDIA_ROOT = BASE_DIR / 'collected-media/' #local or heroku setting
@@ -217,7 +223,15 @@ MEDIA_ROOT = BASE_DIR / 'collected-media/' #local or heroku setting
     
 STATICFILES_DIRS = [BASE_DIR / "static"]  #provides additional directories for collectstatic to look for static files
 
+#django-compressor stuff
+COMPRESS_ROOT = BASE_DIR / 'static'
+COMPRESS_ENABLED = True
 
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "compressor.finders.CompressorFinder"
+    ]
 
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
