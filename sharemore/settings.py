@@ -10,10 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from pathlib import Path
-import environ
 import os
+from pathlib import Path
 
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,10 +40,19 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*",'127.0.0.1', '.herokuapp.com', '.share-more.org', '.railway.app', "https://www.share-more.org", "http://www.share-more.org", "https://share-more.org", "http://share-more.org", "https://*.up.railway.app"]
 
-CSRF_TRUSTED_ORIGINS = ["https://*.share-more.org"]
+
+CSRF_TRUSTED_ORIGINS = ["https://*.herokuapp.com", "https://*.share-more.org"]
 # CSRF_TRUSTED_ORIGINS,  = ["https://www.share-more.org", "http://www.share-more.org", "https://share-more.org", "http://share-more.org", "https://*.up.railway.app"]
 # CSRF_TRUSTED_ORIGINS = ["https://www.share-more.org", "http://www.share-more.org", "https://share-more.org", "http://share-more.org"]
 # CSRF_TRUSTED_ORIGINS = ["https://www.share-more.org", "http://www.share-more.org", "https://share-more.org", "http://share-more.org"]
+
+# add self signed certificate settings?
+# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+# CSRF_COOKIE_SAMESITE = 'None'
+# SESSION_COOKIE_SAMESITE = 'None'
+# CSRF_COOKIE_SECURE = True 
+# SESSION_COOKIE_SECURE = True
+
 
 
 LOGIN_REDIRECT_URL = 'myaccount'
@@ -141,6 +150,7 @@ WSGI_APPLICATION = 'sharemore.wsgi.application'
 # }
 
 import dj_database_url
+
 DATABASE_URL = os.environ['DATABASE_URL']
 DATABASES = {}
 DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
