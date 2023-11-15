@@ -2,10 +2,11 @@ from django import forms
 
 from .models import Userprofile
 
+
 class UserprofileForm(forms.ModelForm):
     class Meta:
         model = Userprofile
-        fields = ('summary', 'full_text', 'image', 'social_url')
+        fields = ('summary', 'full_text', 'image', 'social_url','location_name', 'lat', 'lon')
         widgets = {
             'summary': forms.TextInput(attrs=
                 {

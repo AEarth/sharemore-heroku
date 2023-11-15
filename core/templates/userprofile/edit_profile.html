@@ -3,19 +3,155 @@
 {% block title %}Edit My Account{% endblock %}
 
 {% block content %}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+crossorigin=""/>
+ <!-- Make sure you put this AFTER Leaflet's CSS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+crossorigin=""></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+
 <h1 class="text-2xl text-center font-bold my-3"> {{ request.user.username }}'s Account </h1>
 
 <div class="flex justify-center mt-3">
     
-    <div class="w-1/2 bg-gray-200 p-6 rounded-lg space-y-3">
+    <div class="w-1/2 bg-slate-700 p-6 rounded-lg space-y-3">
 
-        <form method="post" action="." enctype ="multipart/form-data">
+        <form method="post" action="." enctype ="multipart/form-data"
+        class="grid-cols-1">
             {% csrf_token %}
-            {{ form.as_p }}
+            
+            <div class="grid-rows-1 font-bold mt-3">
+            {{form.summary.label_tag}}
+            </div>
+            {{form.summary.errors}}
+            {{form.summary}}
+         
+
+            <div class="grid-rows-1 font-bold mt-3">
+            {{form.full_text.label_tag}}
+            </div>
+            {{form.full_text.errors}}
+            {{form.full_text}}
+
+            <div class="grid-rows-1 font-bold mt-3">
+            {{form.image.label_tag}}
+            </div>
+            {{form.image.errors}}
+            {{form.image}}
+
+            <div class="grid-rows-1 font-bold mt-3">
+            {{form.social_url.label_tag}}
+            </div>
+            {{form.social_url.errors}}
+            {{form.social_url}} 
+
+            <div class="grid-rows-1 font-bold mt-3">
+                Location Name
+                </div>
+                <input type="text" name="location_name" value="" id="location-name-html">
+
+                <div class="grid-rows-1 mt-3"><span class="font-bold">
+                    Latitude: <input type="text" class="font-normal w-1/4" id="lat-html" name="lat" value="">
+                    Longitude: <input type="text" class="font-normal w-1/4" id="lon-html" name="lon" value="">
+                </span>
+
+            </div>
+            <p class= "font-bold mt-3">Choose a Representative Location:</p>
+            <div id="map" class= "w-full h-48 my-3"></div>
+
+        
             <button class="btn btn-primary" type="submit">Update Account</button>
 
+
+        </div>
         </form>
-    </div>
+
+<script>
+    const map = L.map('map').setView([37.54022, -77.45811], 11);
+
+    const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 22, 
+     
+        }).addTo(map);
+
+    
+    // Create a marker and add it to the map
+    var centerMarker = L.circleMarker(map.getCenter()).addTo(map);
+
+    // Function to point query AGOL Rest Service of RVA neighborhoods
+    function findNeighborhood(lat,lon) {
+
+    var url = `https://services1.arcgis.com/PxUNqSbaWFvFgHnJ/arcgis/rest/services/VA_Places/FeatureServer/0/query?where=&objectIds=&time=&geometry=${lon}%2C${lat}&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0&units=esriSRUnit_Meter&relationParam=&returnGeodetic=false&outFields=name&returnGeometry=false&returnCentroid=false&returnEnvelope=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&defaultSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token=`
+
+        // Use fetch to get data from the ArcGIS REST service
+        return fetch(url)
+        .then(response => {
+            // Check if the response is okay
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // json to string
+            const jsonString = JSON.stringify(data);
+            // string to javascript object
+            var jsonData = JSON.parse(jsonString);
+            var neighborhood = jsonData.features[0].attributes.NAME;
+            console.log(neighborhood)
+            return neighborhood
+        })
+        .catch(error => {
+            // Handle any errors
+            console.error('There was a problem with the fetch operation:', error);
+        });
+    }
+
+    // Function to update latitude, longitude, hood text in the HTML
+    function updateLocationDisplayText(lat, lng) {
+        document.getElementById('lat-html').value = lat.toFixed(5);
+        document.getElementById('lon-html').value = lng.toFixed(5);
+        
+        findNeighborhood(lat,lng).then(result => {
+            console.log(result);
+            document.getElementById('location-name-html').value = result;
+        }).catch(error => {
+            console.error('Error:', error);
+            });
+    };
+    
+    // Update the marker position when the map is panned also 'moveend' is an option
+    map.on('move', function() {
+        var centerCoords = map.getCenter()
+        centerMarker.setLatLng(centerCoords);
+        console.log(centerCoords.toString());
+        // To extract the latitude
+        var latjs = centerCoords.lat;
+        var lonjs = centerCoords.lng;
+        // To extract the longitude
+
+        // Outputting the values to console
+        console.log("Latitude: " + latjs + ", Longitude: " + lonjs);
+
+        updateLocationDisplayText(latjs, lonjs);
+ 
+    });
+
+
+
+
+
+
+
+
+</script>
+
+
 
 {% comment %} <form method="post" action=".">
     {% csrf_token %}

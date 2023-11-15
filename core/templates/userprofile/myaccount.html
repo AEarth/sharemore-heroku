@@ -22,6 +22,19 @@
         <h3 class="mt-6 text-lg font-semibold leading-8 text-gray-900">{% firstof request.user.get_full_name request.user.username %}</h3>
         <p class="text-base leading-7 text-gray-600">{{ request.user.userprofile.summary }}</p>
         <p class="mt-4 text-base leading-7 text-gray-600">{{ request.user.userprofile.full_text }}</p>
+
+        {% if user.userprofile.social_url %}
+        <a href="{{ user.userprofile.social_url }}" class="mt-3">{{ user.userprofile.social_url }}</a>
+        {% else %}
+        <p class="mt-3">Location not provided </p>
+        {% endif %}
+        
+        {% if user.userprofile.location_name %}
+        <p class="mt-3">{{ user.userprofile.location_name }}</p>
+        {% else %}
+        <p class="mt-3">Location not provided </p>
+        {% endif %}
+
         <ul role="list" class="mt-6 flex gap-x-6">
           <li>
             <a href="#" class="text-gray-400 hover:text-gray-500">

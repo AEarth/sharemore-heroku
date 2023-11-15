@@ -46,13 +46,25 @@
     </form>
         
         
-   
-    <button type="button" class="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
-        <i class="fa-solid fa-map-location-dot"></i>
-        <p class="text-align right pl-1"> 
-            Map
-        </p>
-    </button>
+    <form id="mapview"
+        hx-post="{% url 'frontpage' %}"
+        {% comment %} action="" {% endcomment %}
+        hx-target="#item-grid"
+        hx-swap="innerHTML transition:true"
+        >
+        {% csrf_token %}
+        <input type="hidden" name="search" value="{{ request.GET.search }}">
+        <button name="listview" type="submit"
+        
+        class="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
+        
+            <i class="fa-solid fa-map-location-dot"></i>
+            <p class="text-align right pl-1"> 
+                Map
+            </p>
+        </button>
+    </form>
+
   </span>
 
     <div id = "item-grid">

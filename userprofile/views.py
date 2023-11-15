@@ -1,25 +1,20 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.models import User 
-from django.contrib.auth.forms import UserCreationForm
+from django import forms
+from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from django.utils.text import slugify
-from django.contrib import messages
-
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.db.models import Q
-
-from django import forms
-
-
-from .models import Userprofile
-from store.forms import ItemForm
-from store.models import Item, LendRequest, WorkflowState, RequestItems
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.text import slugify
 
 from core.context_processors import navigation
+from store.forms import ItemForm, LendApproveForm, LendStatusUpdateForm
+from store.models import Item, LendRequest, RequestItems, WorkflowState
 
 from .forms import UserprofileForm
+from .models import Userprofile
 
-from store.forms import LendApproveForm, LendStatusUpdateForm
 
 @login_required
 def request_detail(request):
@@ -177,6 +172,8 @@ def edit_profile(request):
     
     if request.method =='POST':
         form = UserprofileForm(request.POST or None, request.FILES or None, instance=userprofile)
+         
+        print(request.POST.get("location_name"))
         
         if form.is_valid():
             form.save()

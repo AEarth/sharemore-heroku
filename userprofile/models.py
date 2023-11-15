@@ -1,10 +1,10 @@
-from django.db import models
+from io import BytesIO
 
 from django.contrib.auth.models import User
-
 from django.core.files import File
-from io import BytesIO
+from django.db import models
 from PIL import Image
+
 
 # Create your models here.
 class Userprofile(models.Model):
@@ -16,6 +16,11 @@ class Userprofile(models.Model):
     summary = models.CharField(max_length=200, verbose_name='Catch Phrase', blank=True, null=True)
     full_text = models.TextField(verbose_name='Bio', blank=True, null=True)
     social_url = models.URLField(verbose_name='Social URL', blank=True, null=True)
+    
+    location_name = models.CharField(max_length=50, verbose_name='Location Name', blank=True, null=True)
+    
+    lat = models.DecimalField(max_digits=9, decimal_places=6, verbose_name='Latitude', blank=True, null=True)
+    lon = models.DecimalField(max_digits=9, decimal_places=6, verbose_name='Longitude', blank=True, null=True)
     
     
     def get_all_bell_count(request):
