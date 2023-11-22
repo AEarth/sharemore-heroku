@@ -1,9 +1,10 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
 
-from core.views import frontpage, about, base #FrontpageView, AboutView
+from core.views import (about, base, frontpage,  # FrontpageView, AboutView
+                        styles)
 
 urlpatterns = [
 
@@ -13,6 +14,7 @@ urlpatterns = [
     path('', include('userprofile.urls')),
     path('', include('store.urls')),
     path('', frontpage, name='frontpage'),
+    path('styles/', styles, name='styles'),
 ]
 
 # if settings.enviro_set == 'local':

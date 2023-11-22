@@ -3,76 +3,68 @@
 {% block title %} Welcome {% endblock %}
 
 {% block content %}
-<span class="isolate inline-flex rounded-md shadow-sm">
+<span class="isolate inline-flex rounded-md shadow-sm ">
 
-
-    <form id="gridview"
-        hx-post="{% url 'frontpage' %}"
-        {% comment %} action="" {% endcomment %}
+    <div class="join">
+        <input name="view" value="grid" class="join-item btn btn-sm" type="radio" aria-label="Grid"
+        hx-get="{% url 'frontpage' %}?{{ request.GET.urlencode }}"
+        hx-trigger="click"
         hx-target="#item-grid"
-        hx-swap="innerHTML transition:true"
-    >
-        {% csrf_token %}
-        <input type="hidden" name="search" value="{{ request.GET.search }}">
-        <button name="gridview" type="submit"
+        hx-swap="innerHTML"
+        hx-push-url="true"
+        {% if current_view == 'grid' %} checked {% endif %}
+        />
 
-            class="relative -ml-px inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
-                
-            <i class="fa-solid fa-grip-vertical"></i>
-                <p class="text-align right pl-1"> 
-                    Grid
-                </p>
-        </button>
-    </form>
-
-
-    <form id="listview"
-        hx-post="{% url 'frontpage' %}"
-        {% comment %} action="" {% endcomment %}
+        <input name="view" value="list" class="join-item btn btn-sm" type="radio" aria-label="List"
+        hx-get="{% url 'frontpage' %}?{{ request.GET.urlencode }}"
+        hx-trigger="click"
         hx-target="#item-grid"
-        hx-swap="innerHTML transition:true"
-    >
-        {% csrf_token %}
-        <input type="hidden" name="search" value="{{ request.GET.search }}">
-        <button name="listview" type="submit"
-            
-            class="relative inline-flex items-center  bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
-            
-            <i class="fa-solid fa-list-ul"></i>
-                <p class="text-align right pl-1"> 
-                    List
-                </p>
-        </button>
-    </form>
-        
-        
-    <form id="mapview"
-        hx-post="{% url 'frontpage' %}"
-        {% comment %} action="" {% endcomment %}
+        hx-swap="innerHTML"
+        hx-push-url="true"
+        {% if current_view == 'list' %} checked {% endif %}
+        />
+
+        <input name="view" value="map" class="join-item btn btn-sm" type="radio" aria-label="Map"
+        hx-get="{% url 'frontpage' %}?{{ request.GET.urlencode }}"
+        hx-trigger="click"
         hx-target="#item-grid"
-        hx-swap="innerHTML transition:true"
-        >
-        {% csrf_token %}
-        <input type="hidden" name="search" value="{{ request.GET.search }}">
-        <button name="listview" type="submit"
-        
-        class="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
-        
-            <i class="fa-solid fa-map-location-dot"></i>
-            <p class="text-align right pl-1"> 
-                Map
-            </p>
-        </button>
-    </form>
+        hx-swap="innerHTML"
+        hx-push-url="true"
+        {% if current_view == 'map' %} checked {% endif %}
+        />
+    </div>
+          
+        {% comment %} <i class="fa-solid fa-grip-vertical"></i>
+        <p class="text-align right pl-1"> 
+            Grid
+        </p>
+
+        <i class="fa-solid fa-list-ul"></i>
+        <p class="text-align right pl-1"> 
+            List
+        </p>
+
+        <i class="fa-solid fa-map-location-dot"></i>
+        <p class="text-align right pl-1"> 
+            Map
+        </p> {% endcomment %}
+
 
   </span>
 
     <div id = "item-grid">
         {% if items %}
-        {% include 'store/item_grid.html' %}
-
+            {% if current_view == 'grid' %}
+                {% include 'store/item_grid.html' %}
+            {% elif current_view == 'list' %}
+                {% include 'store/item_list.html' %}
+            {% elif current_view == 'map' %}
+                {% include 'store/item_map.html' %}
+            {% else %}
+                {% include 'store/item_grid.html' %}
+            {% endif %}  
     </div>
-</div>
+
 
 {% else %}
 <h2 class="text-lg my-6"> Nobody items match this criteria ( </h2>

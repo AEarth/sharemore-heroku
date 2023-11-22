@@ -12,14 +12,11 @@ crossorigin=""/>
 integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
 crossorigin=""></script>
 
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-
 <h1 class="text-2xl text-center font-bold my-3"> {{ request.user.username }}'s Account </h1>
 
 <div class="flex justify-center mt-3">
     
-    <div class="w-1/2 bg-slate-700 p-6 rounded-lg space-y-3">
+    <div class="md:w-3/5 sm:w-full text-center bg-slate-700 p-6 rounded-lg space-y-3">
 
         <form method="post" action="." enctype ="multipart/form-data"
         class="grid-cols-1">
@@ -36,14 +33,25 @@ crossorigin=""></script>
             {{form.full_text.label_tag}}
             </div>
             {{form.full_text.errors}}
+            
             {{form.full_text}}
 
             <div class="grid-rows-1 font-bold mt-3">
-            {{form.image.label_tag}}
+                 {{form.image.label_tag}}
             </div>
             {{form.image.errors}}
-            {{form.image}}
 
+            <div>
+                {% if userprofile.image %}
+                <div  class="grid place-items-center grid-cols-3">
+                    <div class="mask mask-circle w-12 h-12">
+                        <img src={{userprofile.thumbnail.url}}>
+                        {% endif %}
+                    </div>
+                <div class="col-span-2 place-items-start"> 
+                {{form.image}}
+                </div>
+            </div>
             <div class="grid-rows-1 font-bold mt-3">
             {{form.social_url.label_tag}}
             </div>
@@ -53,11 +61,12 @@ crossorigin=""></script>
             <div class="grid-rows-1 font-bold mt-3">
                 Location Name
                 </div>
-                <input type="text" name="location_name" value="" id="location-name-html">
+                <input type="text" name="location_name" value="{{userprofile.location_name}}" id="location-name-html" class="text-center input input-sm input-bordered w-full max-w-xs" disabled>
 
                 <div class="grid-rows-1 mt-3"><span class="font-bold">
-                    Latitude: <input type="text" class="font-normal w-1/4" id="lat-html" name="lat" value="">
-                    Longitude: <input type="text" class="font-normal w-1/4" id="lon-html" name="lon" value="">
+                <span>
+                    Latitude: <input type="text" id="lat-html" name="lat" value="{{userprofile.lat}}" class="text-center input input-sm input-bordered font-normal w-1/5" disabled>
+                    Longitude: <input type="text" id="lon-html" name="lon" value="{{userprofile.lon}}" class="text-center input input-bordered input-sm font-normal w-1/5" disabled>
                 </span>
 
             </div>

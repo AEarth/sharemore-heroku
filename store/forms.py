@@ -1,7 +1,7 @@
 from django import forms
-from .models import Item, LendRequest, WorkflowState
 from django_fsm import FSMField
 
+from .models import Item, LendRequest, WorkflowState
 
 
 class DateWidget(forms.DateInput):
@@ -122,7 +122,7 @@ class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
         
-        fields = ('category', 'title', 'description', 'value', 'image',)
+        fields = ('category', 'title', 'description', 'value', 'image', 'location_name')
         label = {'category': "", 'title': "", 'description': "", 'value': "", 'image': "Image"}
         widgets = {
             'category': forms.Select(attrs=
@@ -146,6 +146,10 @@ class ItemForm(forms.ModelForm):
             'image': forms.FileInput(attrs=
                 {
                 'class': 'file-input file-input-bordered file-input-sm w-full max-w-xs'
+                }),
+            'location_name': forms.TextInput(attrs=
+                {
+                'class': 'm-2 input input-bordered input-sm w-1/2 max-w-xs'
                 }),
         }
 

@@ -7,50 +7,57 @@ from django.http import HttpResponseNotFound, QueryDict
 from django.shortcuts import get_object_or_404, redirect, render
 
 from core.context_processors import navigation
+from core.filters import ItemFilter
 from store.cart import Cart
 from store.models import Item
 
 
 def frontpage(request):
-    context = {}
+    
+    # Check if the view preference is already in the session
+    current_view = request.session.get('view_preference', 'grid')  # Default to 'grid'
 
-    # Search bar
-    search = request.GET.get("search") or request.POST.get("search")
-    if search and search != "INVALID VAR/EXP: request.GET.search":
-        print("Search terms: ", search)
-        context["items"] = Item.objects.filter(
-            Q(title__icontains=search) | Q(description__icontains=search)
-        )
-    else:
-        context["items"] = Item.objects.filter(is_deleted=False)
+    # If the view parameter is in the request, update the session
+    if 'view' in request.GET:
+        current_view = request.GET['view']
+        request.session['view_preference'] = current_view  # Save in session
+
+
+    item_filter = ItemFilter(request.GET, queryset=Item.objects.filter(is_deleted=False))
+    
+    context = {
+    'search_form': item_filter.form,
+    'items': item_filter.qs,
+    'current_view': current_view,
+}
+    
+    # if request.GET.get('view'):
+    #     context['current_view'] = request.GET.get('view') 
+
+    if 'HX-Request' in request.headers:
+        if request.GET.get("view") == "grid":
+            template = "store/item_grid.html"
+            return render(request, template, context)
+
+        if request.GET.get("view") == "list":
+            template = "store/item_list.html"
+            return render(request, template, context)
+
+    return render(request, "core/frontpage.html", context)
+
+
+def base(request):
+    # search form in context_processor
+    # bell stuff is now in context_processor
+    context = {}
+    return render(request, "core/base.html", context)
+
 
     # Paginate the results, assuming you want 6 items per page
     # paginator = Paginator(context["items"], 6)
     # page_number = request.GET.get("page")
     # context["items"] = paginator.get_page(page_number)
 
-    if request.method == "POST":
-        print(request.POST)
-        if "listview" in request.POST:
-            template = "store/item_listview.html"
-        elif "gridview" in request.POST:
-            template = "store/item_grid.html"
-
-        # Persist the search term across POST requests
-        # context["search"] = search
-
-        return render(request, template, context)
-
-    # Persist the search term for initial GET requests
-    # context["search"] = search
-
-    return render(request, "core/frontpage.html", context)
-
-
-def base(request):
-    # bell stuff is now in context_processor
-    context = {}
-    return render(request, "core/base.html", context)
 
 
 # def frontpage(request):
@@ -70,7 +77,7 @@ def base(request):
 #         print(request.POST)
 #         if "listview" in request.POST:
 #             print(request.POST)
-#             return render(request, "store/item_listview.html", context)
+#             return render(request, "store/item_list.html", context)
 #         elif "gridview" in request.POST:
 #             print(request.POST)
 #             return render(request, "store/item_grid.html", context)
@@ -80,7 +87,7 @@ def base(request):
 
 # if request.htmx:
 #     print(request.htmx.current_url)
-#     return render(request, 'store/item_listview.html', context)
+#     return render(request, 'store/item_list.html', context)
 #     print(request.GET.get('list-view'))
 
 
@@ -101,7 +108,7 @@ def listview(request):
 
     if request.htmx:
         print(request.htmx.current_url)
-        return render(request, "store/item_listview.html", context)
+        return render(request, "store/item_list.html", context)
     else:
         return HttpResponseNotFound()
 
@@ -110,6 +117,11 @@ def about(request):
     context = {}
 
     return render(request, "core/about.html", context)
+
+
+def styles(request):
+    context = {}
+    return render(request, "core/styles.html", context)
 
 
 # from userprofile.models import Userprofile

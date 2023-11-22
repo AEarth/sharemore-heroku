@@ -6,7 +6,7 @@
 {% block content %}
 {% comment %} <h1 class="text-2xl text-center font-bold my-3"> {{ request.user.username }}'s Account </h1> {% endcomment %}
 
-<div class="bg-white py-5 md:py-10 lg:py-20">
+<div class="dark:bg-slate-800 bg-white dark:text-slate-400  py-5 md:py-10 lg:py-20">
   <div class="mx-auto grid max-w-7xl grid-cols-1 gap-x-8 gap-y-20 px-6 lg:px-8 xl:grid-cols-3">
 
     <ul role="list" class="mx-auto grid max-w-2xl grid-cols-1 gap-x-6 gap-y-20 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:gap-x-8 xl:col-span-2">
@@ -19,12 +19,12 @@
         {% endif %}
 
         {% comment %} <img class="aspect-[3/2] w-full rounded-2xl object-cover" src="/static/default_img/default_profile_img.svg" alt=""> {% endcomment %}
-        <h3 class="mt-6 text-lg font-semibold leading-8 text-gray-900">{% firstof request.user.get_full_name request.user.username %}</h3>
-        <p class="text-base leading-7 text-gray-600">{{ request.user.userprofile.summary }}</p>
-        <p class="mt-4 text-base leading-7 text-gray-600">{{ request.user.userprofile.full_text }}</p>
+        <h3 class="mt-6 text-lg font-semibold leading-8 ">{% firstof request.user.get_full_name request.user.username %}</h3>
+        <p class="text-base leading-7">{{ request.user.userprofile.summary }}</p>
+        <p class="mt-4 text-base leading-7 ">{{ request.user.userprofile.full_text }}</p>
 
         {% if user.userprofile.social_url %}
-        <a href="{{ user.userprofile.social_url }}" class="mt-3">{{ user.userprofile.social_url }}</a>
+        <b>Social: </b><a href="{{ user.userprofile.social_url }}" class="mt-3 text-sky-500">{{ user.userprofile.social_url }}</a>
         {% else %}
         <p class="mt-3">Location not provided </p>
         {% endif %}
@@ -37,7 +37,7 @@
 
         <ul role="list" class="mt-6 flex gap-x-6">
           <li>
-            <a href="#" class="text-gray-400 hover:text-gray-500">
+            <a href="#" class=" hover:">
             </a>
           </li>
         </ul>

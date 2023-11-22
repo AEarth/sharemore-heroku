@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+<body>
+
+    <div class="textarea textarea-bordered textarea-md w-full max-w-xs"></div>
+    <input accept="image/*" class="m-2 file-input file-input-bordered file-input-sm w-full max-w-xs" id="id_image" name="image" type="file">
+    <input class="m-2 input input-bordered input-xs w-full max-w-xs" id="id_social_url" maxlength="200" name="social_url" placeholder="your social media profile url" type="url" value="http://www.facebook.com/bidooof">
+    Latitude: <input type="text" class="font-normal w-1/8" id="lat-html" name="lat" value="{{userprofile.lat}}" class="text-center input input-xs input-bordered" disabled>
+    Longitude: <input type="text" class="font-normal w-1/8" id="lon-html" name="lon" value="{{userprofile.lat}}" class="text-center input input-xs input-bordered" disabled>
+
+<!-- xs -->
+<input type="text" placeholder="Type here" class="input input-bordered input-xs w-full max-w-xs" />
+<!-- sm -->
+<input type="text" placeholder="Type here" class="input input-bordered input-sm w-full max-w-xs" />
+<!-- md -->
+<input type="text" placeholder="Type here" class="input input-bordered input-md w-full max-w-xs" />
+<!-- lg -->
+<input type="text" placeholder="Type here" class="input input-bordered input-lg w-full max-w-xs" />
+
+
+
+{% comment %} this was the category drop down for the navbar {% endcomment %}
+<div id="categories dropdown" class="dropdown dropdown-end dropdown-hover px-1">
+    <div class="hidden lg:block">
+        <label tabindex="0" class="btn btn-sm ">categories</label>
+        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-32">
+            {% for category in categories %} 
+            <li><a href="{% url 'category_detail' category.slug %}" class="text-sm font-bold text-teal-600 text-center"> {{category.title}} </a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+
+</body>
+</html>

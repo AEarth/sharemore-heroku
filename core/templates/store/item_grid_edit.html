@@ -20,7 +20,7 @@
     
             <p>{{ item.description }}</p>
             <div class="card-actions justify-end">
-            <div class="badge badge-outline">${{ item.get_display_value }}</div> 
+            <div class="badge badge-outline">${{ item.get_display_price }}</div> 
             <div class="badge badge-outline">{{ item.category }}</div> 
             <a class="badge badge-secondary"href="{% url 'vendor_page' item.user.id %}"> {% firstof item.user.get_full_name item.user.username %} </a>
         </div>        

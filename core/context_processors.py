@@ -1,15 +1,18 @@
 from django.contrib.auth.decorators import login_required
 
+from core.filters import ItemFilter
 from store.models import Category, Item, LendRequest
 from userprofile.models import Userprofile
 
 
 def navigation(request):
     context = {}
+    item_filter = ItemFilter(request.GET, queryset=Item.objects.filter(is_deleted=False))
     # if 'items' not in context:
     #     context['items'] = Item.objects.filter(is_deleted=False)[0:6]
     context['categories'] = Category.objects.all()
     context['users'] = Userprofile.objects.all()
+    context['search_form'] = item_filter.form
     return context
 
 

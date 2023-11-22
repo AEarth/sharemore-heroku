@@ -78,6 +78,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'storages',
     'compressor',
+    'livereload',
+    'django_filters'
     # 'tailwind',
     # 'theme',    
     # 'simple_deploy', 
@@ -100,6 +102,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
      "django_htmx.middleware.HtmxMiddleware",
+     'livereload.middleware.LiveReloadScript',
 ]    
 
 if ENVIRO_SET == 'local':

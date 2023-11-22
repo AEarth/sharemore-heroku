@@ -15,7 +15,7 @@
     
       <div>
         
-     <div class="badge"> Value: ${{ item.get_display_value }}</div>
+     <div class="badge"> Value: {{ item.get_display_price }}</div>
     <div class="badge badge-primary"><a href="{% url 'vendor_page' item.user.id %}" {% firstof item.user.get_full_name item.user.username %} ">{{ item.user.get_full_name }}</a>
     </div>
         

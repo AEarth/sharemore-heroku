@@ -1,24 +1,20 @@
-from django.db import models
-from django.db.models import Sum
-
-from django.contrib.auth.models import User
-from django.core.files import File
-
-from io import BytesIO
-from PIL import Image
-
 from datetime import datetime
-from django.db.models.signals import post_save
+from io import BytesIO
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
+from django.core.files import File
+from django.db import models
+from django.db.models import Sum
+from django.db.models.signals import post_save
+from django.shortcuts import get_object_or_404, redirect, render
 from django_fsm import FSMField, transition
-
-from django.shortcuts import render, get_object_or_404, redirect
+from PIL import Image
+from threadlocals.threadlocals import get_current_request
 
 # from sharemore.middleware import CurrentUserMiddleware
 # import threading
 
-from threadlocals.threadlocals import get_current_request
 
 
 # request_cfg = threading.local()
@@ -249,6 +245,10 @@ class Item(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     is_deleted = models.BooleanField(default=False)
     
+    location_name = models.CharField(max_length=50, verbose_name='Location Name', blank=True, null=True)
+    lat = models.DecimalField(max_digits=9, decimal_places=6, verbose_name='Latitude', blank=True, null=True)
+    lon = models.DecimalField(max_digits=9, decimal_places=6, verbose_name='Longitude', blank=True, null=True)
+    
     def make_images(self):
         self.thumbnail = self.make_thumbnail(self.image)
         print(f"Updated thumbnail {self.thumbnail}")
@@ -280,9 +280,9 @@ class Item(models.Model):
     def __str__(self):
         return self.title
     
-    def get_display_value(self):
-        price = self.value / 100 
-        return f"{price:.2f}"
+    def get_display_price(self):
+        price = self.value
+        return f"${price:,}"
     
     def get_title(self):
         if len(self.title)> 20:

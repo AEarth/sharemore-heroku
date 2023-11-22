@@ -10,10 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from pathlib import Path
-import environ
 import os
+from pathlib import Path
 
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -251,6 +251,7 @@ INTERNAL_IPS = [
 
 
 import os
+
 if 'ON_HEROKU' in os.environ:
     ALLOWED_HOSTS.append('sharemore1-*.herokuapp.com')
     #import dj_database_url

@@ -15,8 +15,8 @@ django-threadlocals==0.10
 django-debug-toolbar==4.2.0
 
 django-compressor==4.4
-django-tailwind==3.6.0
-
+django-tailwind==3.6.0 #prob not required in dev but whatever
+django-filter==23.3
 
 #amazon s3 storages
 django-storages==1.14.2 # alternatively django-storages[s3]

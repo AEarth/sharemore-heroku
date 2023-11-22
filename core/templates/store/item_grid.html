@@ -1,5 +1,5 @@
 {% if items %}
-<div class = "flex flex-wrap mt-2 items-center justify-around">
+<div class="flex flex-wrap mt-2 items-center justify-around">
   {% for item in items %}
 
   <div class="flex flex-wrap my-6 items-center justify-around">
@@ -8,7 +8,7 @@
         <a href="{% url 'item_detail'  item.category.slug item.slug %}">
           {% if item.image %}
           <figure>
-            <img src="{{ item.image_med.url }}" alt="{{ item.title }}" />
+            <img class="rounded-md" src="{{ item.image_med.url }}" alt="{{ item.title }}" />
           </figure>
           {% endif %}
         </a>
@@ -17,7 +17,7 @@
       <div class="card-body">
         <span class="flex justify-around">
           <a
-            class="btn btn-sm btn-accent"
+            class="btn btn-sm btn-secondary"
             href="{% url 'item_detail'  item.category.slug item.slug %}"
           >
             <h3 class="card-title">
@@ -33,10 +33,10 @@
         </span>
         <p>{{ item.description }}</p>
         <div class="card-actions justify-end">
-          <div class="badge badge-outline">${{ item.get_display_value }}</div>
+          <div class="badge badge-outline">{{ item.get_display_price }}</div>
           <div class="badge badge-outline">{{ item.category }}</div>
           <a
-            class="badge badge-secondary"
+            class="badge badge-neutral"
             href="{% url 'vendor_page' item.user.id %}"
           >
             {% firstof item.user.get_full_name item.user.username %}

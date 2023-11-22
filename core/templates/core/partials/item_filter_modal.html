@@ -1,0 +1,32 @@
+<dialog id="my_modal_3" class="modal">
+    <div class="modal-box">
+        <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+
+
+<form method="get" class="grid grid-cols-1 place-items-center">
+
+<div class="grid grid-rows-1 place-items-center font-bold">
+    <div class="join">
+        <input class="join-item btn btn-sm" type="radio" name="category" value="1" aria-label="tools" />
+        <input class="join-item btn btn-sm" type="radio" name="category" value="2" aria-label="books" />
+      </div>
+
+<div class="grid-rows-1 place-items-center mt-3">
+<span> Text Search:
+{{form.title_description.errors}}
+{{form.title_description}}
+</span>
+</div>
+
+
+<div class="grid-rows-1 mt-3">
+</div>
+{{form.value__gte.errors}}
+{{form.value__lte.errors}}
+<span>
+Price Range: {{form.value__gte}} - {{form.value__lte}}
+</span>
+<button class="btn btn-sm mt-3 btn-primary join-item" type="submit">Go</button>
+</form>
