@@ -18,7 +18,7 @@ import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-ENVIRO_SET = 'local'
+#ENVIRO_SET = 'local'
 
 env = environ.Env(
     # set casting, default value
@@ -78,7 +78,6 @@ INSTALLED_APPS = [
     'django_extensions',
     'storages',
     'compressor',
-    #'livereload', #local dev only
     'django_filters'
     # 'tailwind',
     # 'theme',    
@@ -102,15 +101,14 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
      "django_htmx.middleware.HtmxMiddleware",
-     'livereload.middleware.LiveReloadScript',
 ]    
 
 if ENVIRO_SET == 'local':
     MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
     INSTALLED_APPS += ["debug_toolbar"]
     print("Running Local Apps")
-    #INSTALLED_APPS.insert(4,'livereload')
-    #MIDDLEWARE += ['livereload.middleware.LiveReloadScript',]
+    INSTALLED_APPS.insert(4,'livereload')
+    MIDDLEWARE += ['livereload.middleware.LiveReloadScript',]
     
 
 
