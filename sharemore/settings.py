@@ -78,7 +78,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'storages',
     'compressor',
-    'livereload',
+    #'livereload', #local dev only
     'django_filters'
     # 'tailwind',
     # 'theme',    
