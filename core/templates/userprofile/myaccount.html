@@ -26,7 +26,7 @@
         {% if user.userprofile.social_url %}
         <b>Social: </b><a href="{{ user.userprofile.social_url }}" class="mt-3 text-sky-500">{{ user.userprofile.social_url }}</a>
         {% else %}
-        <p class="mt-3">Location not provided </p>
+        <p class="mt-3">Social URL not provided </p>
         {% endif %}
         
         {% if user.userprofile.location_name %}

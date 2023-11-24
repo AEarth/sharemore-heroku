@@ -235,7 +235,7 @@ MEDIA_ROOT = BASE_DIR / 'collected-media/' #local or heroku setting
 STATICFILES_DIRS = [BASE_DIR / "static"]  #provides additional directories for collectstatic to look for static files
 
 #django-compressor stuff
-COMPRESS_ROOT = BASE_DIR / 'static'
+# COMPRESS_ROOT = BASE_DIR / 'collected-static'  # should default to STATIC_ROOT var
 COMPRESS_ENABLED = True
 
 STATICFILES_FINDERS = [

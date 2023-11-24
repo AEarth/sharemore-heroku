@@ -4,5 +4,20 @@
     },
     "python.formatting.provider": "none",
     "python.linting.flake8Enabled": true,
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "sqltools.connections": [
+        {
+            "pgOptions": {
+                "ssl": true
+            },
+            "previewLimit": 50,
+            "server": "ec2-34-206-106-3.compute-1.amazonaws.com",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "Heroku PostGres",
+            "database": "davv7bi3blph9c",
+            "username": "jsfpchnkvtfhou",
+            "password": "ad5ae6cc98e8469eea5d3e90ae5edd0481dd3c3337dad2e55752a0769b3b1ab2"
+        }
+    ]
 }

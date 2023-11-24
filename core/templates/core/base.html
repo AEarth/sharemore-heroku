@@ -12,15 +12,14 @@
 
 
  {% comment %} TAILWIND USE FOR PRODUCTION {% endcomment %}
- {% comment %} {% load compress %} {% endcomment %}
- {% comment %} {% compress css %} {% endcomment %}
+ {% comment %} {% load compress %}
+ {% compress css %}
  <link rel="stylesheet" href="{% static 'src/output.css' %}"> 
- 
- {% comment %} {% endcompress %} {% endcomment %}
+ {% endcompress %} {% endcomment %}
 
  {% comment %} TAILWIND USE FOR DEVELOPMENT {% endcomment %}
-{% comment %} <script src="https://cdn.tailwindcss.com"></script> {% endcomment %}
-{% comment %} <link href="https://cdn.jsdelivr.net/npm/daisyui@3.6.4/dist/full.css" rel="stylesheet" type="text/css" /> {% endcomment %}
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/daisyui@3.6.4/dist/full.css" rel="stylesheet" type="text/css" />
 
 {% comment %} <script src="https://unpkg.com/htmx.org/dist/ext/remove-me.js"></script> {% endcomment %}
 
