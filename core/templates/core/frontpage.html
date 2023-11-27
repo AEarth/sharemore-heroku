@@ -1,39 +1,48 @@
 {% extends 'core/base.html' %}
-
-{% block title %} Welcome {% endblock %}
-
+{% block title %}Welcome{% endblock %}
 {% block content %}
-<span class="isolate inline-flex rounded-md shadow-sm ">
+<style type = "text/css">
+    .leaflet-container { z-index: 0 !important; }
+</style>
 
-    <div class="join">
-        <input name="view" value="grid" class="join-item btn btn-sm" type="radio" aria-label="Grid"
-        hx-get="{% url 'frontpage' %}?{{ request.GET.urlencode }}"
-        hx-trigger="click"
-        hx-target="#item-grid"
-        hx-swap="innerHTML"
-        hx-push-url="true"
-        {% if current_view == 'grid' %} checked {% endif %}
-        />
+    <span class="isolate inline-flex rounded-md shadow-sm ">
+        <div class="join">
+            <input name="view"
+                   value="grid"
+                   class="join-item btn btn-sm"
+                   type="radio"
+                   aria-label="Grid"
+                   hx-get="{% url 'frontpage' %}?{{ request.GET.urlencode }}"
+                   hx-trigger="click"
+                   hx-target="#item-grid"
+                   hx-swap="innerHTML"
+                   hx-push-url="true"
+                   {% if current_view == 'grid' %}checked{% endif %} />
 
-        <input name="view" value="list" class="join-item btn btn-sm" type="radio" aria-label="List"
-        hx-get="{% url 'frontpage' %}?{{ request.GET.urlencode }}"
-        hx-trigger="click"
-        hx-target="#item-grid"
-        hx-swap="innerHTML"
-        hx-push-url="true"
-        {% if current_view == 'list' %} checked {% endif %}
-        />
-
-        <input name="view" value="map" class="join-item btn btn-sm" type="radio" aria-label="Map"
-        hx-get="{% url 'frontpage' %}?{{ request.GET.urlencode }}"
-        hx-trigger="click"
-        hx-target="#item-grid"
-        hx-swap="innerHTML"
-        hx-push-url="true"
-        {% if current_view == 'map' %} checked {% endif %}
-        />
-    </div>
-          
+            <input name="view"
+                   value="list"
+                   class="join-item btn btn-sm"
+                   type="radio"
+                   aria-label="List"
+                   hx-get="{% url 'frontpage' %}?{{ request.GET.urlencode }}"
+                   hx-trigger="click"
+                   hx-target="#item-grid"
+                   hx-swap="innerHTML"
+                   hx-push-url="true"
+                   {% if current_view == 'list' %}checked{% endif %} />
+            
+            <input name="view"
+                   value="map"
+                   class="join-item btn btn-sm"
+                   type="radio"
+                   aria-label="Map"
+                   hx-get="{% url 'frontpage' %}?{{ request.GET.urlencode }}"
+                   hx-trigger="click"
+                   hx-target="#item-grid"
+                   hx-swap="innerHTML"
+                   hx-push-url="true"
+                   {% if current_view == 'map' %}checked{% endif %} />
+        </div>
         {% comment %} <i class="fa-solid fa-grip-vertical"></i>
         <p class="text-align right pl-1"> 
             Grid
@@ -48,10 +57,7 @@
         <p class="text-align right pl-1"> 
             Map
         </p> {% endcomment %}
-
-
-  </span>
-
+    </span>
     <div id = "item-grid">
         {% if items %}
             {% if current_view == 'grid' %}
@@ -59,15 +65,18 @@
             {% elif current_view == 'list' %}
                 {% include 'store/item_list.html' %}
             {% elif current_view == 'map' %}
-                {% include 'store/item_map.html' %}
+                {% include 'store/item_map_og.html' %}
             {% else %}
                 {% include 'store/item_grid.html' %}
-            {% endif %}  
+            {% endif %}
+        {% else %}
+            <h2 class="text-lg my-6">Nobody items match this criteria (</h2>
+        {% endif %}
     </div>
+ 
+    {% load static %}
+    <script defer src="{% static 'store/item_map.js'%}">
+    </script>
 
-
-{% else %}
-<h2 class="text-lg my-6"> Nobody items match this criteria ( </h2>
-{% endif %}   
 
 {% endblock %}

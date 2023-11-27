@@ -15,13 +15,17 @@ django-threadlocals==0.10
 django-debug-toolbar==4.2.0
 
 django-compressor==4.4
-django-tailwind==3.6.0 #prob not required in dev but whatever
+#django-tailwind==3.6.0 #prob not required in dev but whatever
 django-filter==23.3
+#django-livereload
 
 #amazon s3 storages
 django-storages==1.14.2 # alternatively django-storages[s3]
 boto3==1.28.63
 
 #django widget tweaks?
-psycopg2==2.9.6                    # Added by simple_deploy command.
+psycopg2-binary #2.9.6                    # Added by simple_deploy command.
 dj-database-url               # Added by simple_deploy command.
+
+#gis stuff
+geopy==2.4.1

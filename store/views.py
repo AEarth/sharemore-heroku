@@ -1,12 +1,68 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Q
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib import messages
+from django.db.models import Q
+from django.shortcuts import get_object_or_404, redirect, render
 
-from .models import Item, Category, LendRequest, RequestItems
-from .forms import LendRequestForm, LendApproveForm
 from .cart import Cart
+from .forms import LendApproveForm, LendRequestForm
+from .models import Category, Item, LendRequest, RequestItems
+
+
+def change_quantity(request, item_id):
+    action = request.GET.get('action', '')
+    cart = Cart(request)
+    
+    if action:
+        quantity = 1
+        
+        if action == 'decrease':
+            quantity = -1
+        
+        cart.add(item_id, quantity, update_quantity=True)
+
+    return redirect('cart_view')
+
+def remove_from_cart(request, item_id):
+    cart = Cart(request)
+    cart.remove_item(item_id)
+    
+    return redirect('cart_view')
+
+def add_to_cart(request, item_id):
+    cart = Cart(request)
+    cart.add(item_id)
+    
+    return redirect('frontpage')
+
+def cart_view(request):
+    cart = Cart(request)
+    for item in cart:
+            indv_item = item['item']
+    context = {'cart': cart}
+    return render(request, 'store/cart_view.html', context)
+
+
+def item_detail(request, category_slug, slug):
+    item = get_object_or_404(Item,slug=slug, is_deleted=False)
+    cart = Cart(request)
+    # print(cart.get_total_cost())
+    
+    context = {
+        'item': item,
+    }
+    return render(request, 'store/item_detail.html', context)
+
+
+def category_detail(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    items = category.items.exclude(is_deleted=True).all()
+    
+    context =  {
+        'category': category,
+        'items': items,
+    }
+    return render(request, 'store/category_detail.html', context)
 
 
 
@@ -62,67 +118,14 @@ def lend_request(request):
     return render(request, 'store/lend_request.html', context)
 
 
-def change_quantity(request, item_id):
-    action = request.GET.get('action', '')
-    cart = Cart(request)
-    
-    if action:
-        quantity = 1
-        
-        if action == 'decrease':
-            quantity = -1
-        
-        cart.add(item_id, quantity, update_quantity=True)
-
-    return redirect('cart_view')
-
-def remove_from_cart(request, item_id):
-    cart = Cart(request)
-    cart.remove_item(item_id)
-    
-    return redirect('cart_view')
-
-def add_to_cart(request, item_id):
-    cart = Cart(request)
-    cart.add(item_id)
-    
-    return redirect('frontpage')
-
-def cart_view(request):
-    cart = Cart(request)
-    for item in cart:
-            indv_item = item['item']
-    context = {'cart': cart}
-    return render(request, 'store/cart_view.html', context)
-
-def search(request):
-    query = request.GET.get('query', '')
-    items = Item.objects.filter(Q(title__icontains=query) | Q(description__icontains=query))
-    context = {
-        'query': query,
-        'items': items,
-    }
-    return render(request, 'store/search.html', context)
 
 
-def item_detail(request, category_slug, slug):
-    item = get_object_or_404(Item,slug=slug, is_deleted=False)
-    cart = Cart(request)
-    # print(cart.get_total_cost())
-    
-    context = {
-        'item': item,
-    }
-    return render(request, 'store/item_detail.html', context)
-
-
-def category_detail(request, slug):
-    category = get_object_or_404(Category, slug=slug)
-    items = category.items.exclude(is_deleted=True).all()
-    
-    context =  {
-        'category': category,
-        'items': items,
-    }
-    return render(request, 'store/category_detail.html', context)
-
+# ## basic search function no longer used
+# def search(request):
+#     query = request.GET.get('query', '')
+#     items = Item.objects.filter(Q(title__icontains=query) | Q(description__icontains=query))
+#     context = {
+#         'query': query,
+#         'items': items,
+#     }
+#     return render(request, 'store/search.html', context)

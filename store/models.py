@@ -3,8 +3,8 @@ from io import BytesIO
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
+from django.contrib.gis.db import models
 from django.core.files import File
-from django.db import models
 from django.db.models import Sum
 from django.db.models.signals import post_save
 from django.shortcuts import get_object_or_404, redirect, render
@@ -12,19 +12,89 @@ from django_fsm import FSMField, transition
 from PIL import Image
 from threadlocals.threadlocals import get_current_request
 
-# from sharemore.middleware import CurrentUserMiddleware
-# import threading
 
+class Category(models.Model):
+    title = models.CharField(max_length=50)
+    slug = models.SlugField(max_length=50)
+    
+    class Meta:
+        verbose_name_plural = 'Categories'
+    
+    def __str__(self):
+        return self.title
+    
 
+class Item(models.Model):
+    user = models.ForeignKey(User, related_name='items', on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, related_name='items', on_delete=models.CASCADE)
+    title = models.CharField(max_length=50)
+    slug = models.SlugField(max_length=50)
+    description = models.TextField(blank=True)
+    value = models.IntegerField()
+    image = models.ImageField(upload_to='uploads/item_images/', blank=True, null=True)
+    image_med = models.ImageField(upload_to='uploads/item_images_med/', blank=True, null=True)
+    thumbnail = models.ImageField(upload_to='uploads/item_thumbnails/', blank=True, null=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+    is_deleted = models.BooleanField(default=False)
+    
+    location_name = models.CharField(max_length=50, verbose_name='Location Name', blank=True, null=True)
+    lat = models.DecimalField(max_digits=9, decimal_places=6, verbose_name='Latitude', blank=True, null=True)
+    lon = models.DecimalField(max_digits=9, decimal_places=6, verbose_name='Longitude', blank=True, null=True)
+    
+    point = models.PointField(blank=True, null=True, srid=4326)
+    
+    def make_images(self):
+        self.thumbnail = self.make_thumbnail(self.image)
+        print(f"Updated thumbnail {self.thumbnail}")
+        self.image_med = self.make_thumbnail(self.image, size=(300,300))
+        print(f"Updated medium img {self.image_med}")
+        
 
-# request_cfg = threading.local()
-# #user = getattr(request_cfg, 'user', None)
+    def save(self, *args, **kwargs):         
+        #check if image update
+        if self.pk:
+            orig = Item.objects.get(pk=self.pk)
+            #check if image file changed
+            if orig.image != self.image:
+                self.make_images()
+                super().save(*args, **kwargs)
+            else:
+                super().save(*args, **kwargs)
+        #first first form completion with image uploaded create thumbs 
+        if self.pk is None and self.image:
+            self.make_images()
+            super().save(*args, **kwargs)
+        else:
+            super().save(*args, **kwargs)
 
-# def get_user_model(request):
-#     user = CurrentUserMiddleware.get_user(request)
-#     return user
-
-# get_user_model(request_cfg)
+    
+    class Meta:
+        ordering = ('-created_date',)
+    
+    def __str__(self):
+        return self.title
+    
+    def get_display_price(self):
+        price = self.value
+        return f"${price:,}"
+    
+    def get_title(self):
+        if len(self.title)> 20:
+            return self.title[:20] + '...'
+        return self.title
+    
+    def make_thumbnail(self, image, size=(75,75)):
+        img = Image.open(image)
+        img = img.convert('RGB')
+        img.thumbnail(size)
+        
+        thumb_io = BytesIO()
+        img.save(thumb_io, 'JPEG', quality=85)
+        name = image.name.replace('uploads/item_images/', '')
+        thumbnail = File(thumb_io, name=name)
+        
+        return thumbnail
 
 class WorkflowState(object):
     # constants to represent the states of the lendrequest model workflow
@@ -220,108 +290,9 @@ class RequestItems(models.Model):
         return f"{self.item} - {self.quantity}" 
 
             
-class Category(models.Model):
-    title = models.CharField(max_length=50)
-    slug = models.SlugField(max_length=50)
-    
-    class Meta:
-        verbose_name_plural = 'Categories'
-    
-    def __str__(self):
-        return self.title
-    
-    
-class Item(models.Model):
-    user = models.ForeignKey(User, related_name='items', on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, related_name='items', on_delete=models.CASCADE)
-    title = models.CharField(max_length=50)
-    slug = models.SlugField(max_length=50)
-    description = models.TextField(blank=True)
-    value = models.IntegerField()
-    image = models.ImageField(upload_to='uploads/item_images/', blank=True, null=True)
-    image_med = models.ImageField(upload_to='uploads/item_images_med/', blank=True, null=True)
-    thumbnail = models.ImageField(upload_to='uploads/item_thumbnails/', blank=True, null=True)
-    created_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
-    is_deleted = models.BooleanField(default=False)
-    
-    location_name = models.CharField(max_length=50, verbose_name='Location Name', blank=True, null=True)
-    lat = models.DecimalField(max_digits=9, decimal_places=6, verbose_name='Latitude', blank=True, null=True)
-    lon = models.DecimalField(max_digits=9, decimal_places=6, verbose_name='Longitude', blank=True, null=True)
-    
-    def make_images(self):
-        self.thumbnail = self.make_thumbnail(self.image)
-        print(f"Updated thumbnail {self.thumbnail}")
-        self.image_med = self.make_thumbnail(self.image, size=(300,300))
-        print(f"Updated medium img {self.image_med}")
-        
 
-    def save(self, *args, **kwargs):         
-        #check if image update
-        if self.pk:
-            orig = Item.objects.get(pk=self.pk)
-            #check if image file changed
-            if orig.image != self.image:
-                self.make_images()
-                super().save(*args, **kwargs)
-            else:
-                super().save(*args, **kwargs)
-        #first first form completion with image uploaded create thumbs 
-        if self.pk is None and self.image:
-            self.make_images()
-            super().save(*args, **kwargs)
-        else:
-            super().save(*args, **kwargs)
 
     
-    class Meta:
-        ordering = ('-created_date',)
-    
-    def __str__(self):
-        return self.title
-    
-    def get_display_price(self):
-        price = self.value
-        return f"${price:,}"
-    
-    def get_title(self):
-        if len(self.title)> 20:
-            return self.title[:20] + '...'
-        return self.title
-    
-    def make_thumbnail(self, image, size=(75,75)):
-        img = Image.open(image)
-        img = img.convert('RGB')
-        img.thumbnail(size)
-        
-        thumb_io = BytesIO()
-        img.save(thumb_io, 'JPEG', quality=85)
-        name = image.name.replace('uploads/item_images/', '')
-        thumbnail = File(thumb_io, name=name)
-        
-        return thumbnail
-    
-    # def get_thumbnail(self):
-    #     if self.thumbnail:
-    #         return self.thumbnail.url
-    #     elif self.image:
-    #         self.thumbnail = self.make_thumbnail(self.image)
-    #         self.save()
-            
-    #         return self.thumbnail.url
-    #     else:
-    #         return False
-  
-  
-    # def get_image_med(self):
-    #     if self.image_med:
-    #         print("found image_med")
-    #         return self.image_med.url
-    #     elif self.image:
-    #             self.image_med = self.make_thumbnail(self.image, size=(300,300))
-    #             self.save()
-    #             return self.image_med.url
-    #     return "/static/default_img/item.png"
 
 
 # class LendPeriod(models.Model):

@@ -18,7 +18,7 @@ import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-ENVIRO_SET = ''#'local'
+ENVIRO_SET = 'local'
 
 env = environ.Env(
     # set casting, default value
@@ -35,8 +35,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+
 
 ALLOWED_HOSTS = ["*",'127.0.0.1', '.herokuapp.com', '.share-more.org', '.railway.app', "https://www.share-more.org", "http://www.share-more.org", "https://share-more.org", "http://share-more.org", "https://*.up.railway.app"]
 
@@ -68,6 +67,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.gis',
     'whitenoise.runserver_nostatic', #whitenoise setting
     'django.contrib.staticfiles',
     'core',
@@ -107,10 +107,14 @@ if ENVIRO_SET == 'local':
     MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
     INSTALLED_APPS += ["debug_toolbar"]
     print("Running Local Apps")
-    INSTALLED_APPS.insert(4,'livereload')
-    MIDDLEWARE += ['livereload.middleware.LiveReloadScript',]
-    
-
+    #INSTALLED_APPS.insert(4,'livereload')
+    #MIDDLEWARE += ['livereload.middleware.LiveReloadScript',]
+    # SECURITY WARNING: don't run with debug turned on in production!
+    DEBUG = True
+    #trying to get debug toolbar to work in docker   
+    # DEBUG_TOOLBAR_CONFIG = {
+    #     'SHOW_TOOLBAR_CALLBACK': True
+    # }
 
 ROOT_URLCONF = 'sharemore.urls'
 
@@ -155,6 +159,9 @@ import dj_database_url
 DATABASE_URL = os.environ['DATABASE_URL']
 DATABASES = {}
 DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+
+DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
+
 
 # #manual set database (e.g. railway or aws)
 # DATABASES = {

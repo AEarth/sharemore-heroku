@@ -238,6 +238,9 @@ def add_item(request):
 
             item.user = request.user
             item.slug = slugify(title)
+            item.lat = request.user.userprofile.lat
+            item.lon = request.user.userprofile.lon
+            item.location_name = request.user.userprofile.location_name
             item.save()
             
             messages.success(request, 'Item added!')
@@ -261,16 +264,19 @@ def edit_item(request, pk):
     if request.method == 'POST':
          form = ItemForm(request.POST or None, request.FILES or None, instance=item)
          if form.is_valid():
-             item = form.save(commit=False)
-             title = request.POST.get('title')
-             item.slug = slugify(title)
-             item.save()
+            item = form.save(commit=False)
+            title = request.POST.get('title')
+            item.slug = slugify(title)
+            item.lat = request.user.userprofile.lat
+            item.lon = request.user.userprofile.lon
+            item.location_name = request.user.userprofile.location_name
+            item.save()
              
              #http_response = HttpResponse()
              
-             messages.success(request, 'Item updated successfully')
+            messages.success(request, 'Item updated successfully')
              
-             return redirect('my_inventory')
+            return redirect('my_inventory')
     else:
         form = ItemForm(instance=item)
             

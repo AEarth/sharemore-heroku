@@ -10,7 +10,6 @@
 
  <title> {% block title %} {% endblock %} | Sharemore </title>
 
-
  {% comment %} TAILWIND USE FOR PRODUCTION {% endcomment %}
  {% comment %} {% load compress %}
  {% compress css %}
@@ -30,6 +29,15 @@
 
 <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.x.x/dist/cdn.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+crossorigin=""/>
+ <!-- Make sure you put this AFTER Leaflet's CSS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+crossorigin=""></script>
+
 {% comment %} 
   <script defer src="{% static 'alpin.min.js'%}"></script>
   <script defer src="{% static 'alpinmask.min.js'%}"></script> {% endcomment %}
@@ -70,14 +78,23 @@
                                         <input class="join-item btn btn-xs" type="radio" name="category" value="1" aria-label="tools" />
                                         <input class="join-item btn btn-xs" type="radio" name="category" value="2" aria-label="books" />
                                     </div>
-                                    <span>                        
+                                                          
                                         {{search_form.price_greater.errors}}
                                         {{search_form.price_less.errors}}
+
+                                    Price Range:
+
+                                    <span>  
+                                        {{search_form.price_greater}} - {{search_form.price_less}}
                                     </span>
-                                Price Range:
-                                {{search_form.price_greater}} - {{search_form.price_less}}
                                 </div>
-                            </div>
+                     
+                                    <div x-data="{dist_js:50}" class="grid grid-rows-1 place-items-center">
+                                        Maximum Distance (mi):<br />
+                                        <input type="input" class="text-center w-1/2 " name="distance" x-model="dist_js" >
+                                        <input class="w-full" type="range" x-model="dist_js" min="0" max="100" step="1">
+                                    </div>
+                                </div>
                         </ul>  
                     </div>
 

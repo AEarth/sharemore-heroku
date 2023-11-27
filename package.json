@@ -2,6 +2,8 @@
   "devDependencies": {
     "css": "^3.0.0",
     "daisyui": "^4.4.0",
+    "eslint": "^8.54.0",
+    "eslint-plugin-html": "^7.1.0",
     "tailwind": "^4.0.0"
   }
 }

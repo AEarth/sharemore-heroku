@@ -1,36 +1,45 @@
+import json
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
+from django.core.serializers import serialize
 from django.db.models import Q
 from django.http import HttpResponseNotFound, QueryDict
 from django.shortcuts import get_object_or_404, redirect, render
 
 from core.context_processors import navigation
 from core.filters import ItemFilter
+#from sharemore.settings import MEDIA_URL
 from store.cart import Cart
 from store.models import Item
 
 
 def frontpage(request):
+    context = {}
+    
+    item_filter = ItemFilter(request.GET, queryset=Item.objects.filter(is_deleted=False))
+    context['items'] = item_filter.qs
+    context['search_form'] = item_filter.form
     
     # Check if the view preference is already in the session
     current_view = request.session.get('view_preference', 'grid')  # Default to 'grid'
+    context['current_view'] = current_view
 
     # If the view parameter is in the request, update the session
     if 'view' in request.GET:
         current_view = request.GET['view']
         request.session['view_preference'] = current_view  # Save in session
-
-
-    item_filter = ItemFilter(request.GET, queryset=Item.objects.filter(is_deleted=False))
     
-    context = {
-    'search_form': item_filter.form,
-    'items': item_filter.qs,
-    'current_view': current_view,
-}
-    
+    if current_view == "map":
+        geojson = serialize('geojson', item_filter.qs, geometry_field='point', fields=('title', 'description', 'point', 'category', 'value', 'image_med', 'thumbnail', 'image_med.url' 'id'))
+        print(geojson)
+        context['points'] = json.loads(geojson)
+        #context['media_url'] = MEDIA_URL
+        
+    print("Current view pref:", current_view)
+
     # if request.GET.get('view'):
     #     context['current_view'] = request.GET.get('view') 
 
@@ -41,6 +50,11 @@ def frontpage(request):
 
         if request.GET.get("view") == "list":
             template = "store/item_list.html"
+            return render(request, template, context)
+        
+        if request.GET.get("view") == "map":
+            template = "store/item_map_og.html"
+            #print(json.loads(geojson))
             return render(request, template, context)
 
     return render(request, "core/frontpage.html", context)
