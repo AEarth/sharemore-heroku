@@ -1,5 +1,22 @@
-               
+
+const mediaUrl = 'https://sharemore-media.s3.amazonaws.com/media/'
+
 function initMap() {
+   
+    window.selectedfid = 2;
+    
+    window.globalId = 2;
+    console.log(globalId)
+    
+    var data = document.getElementById('points-data').textContent;
+
+    console.log(data)
+    
+    var geojsonData = JSON.parse(data)
+    
+    console.log(geojsonData)
+
+
     var map = L.map('map').setView([37.54022, -77.45811], 11);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -7,27 +24,69 @@ function initMap() {
     }).addTo(map);
 
 
-    const data = document.getElementById('points-data').textContent;
-    geojsonData = JSON.parse(data)
-
-    console.log(geojsonData)
-
-    const mediaUrl = 'https://sharemore-media.s3.amazonaws.com/media/'
-    
-
     let pointLayer = L.geoJSON(geojsonData, {
         onEachFeature: function (feature, layer) {
-            if (feature.properties && feature.properties.title) {
-                layer.bindPopup(
-                    `<h3> ${feature.properties.title} </h3>
-                    <p> ${feature.properties.description} </p>
-                    <img src="${mediaUrl}${feature.properties.thumbnail}"></img>`);
-            }
+  
+            if (feature.id) {
+                layer.bindTooltip(feature.id.toString(), {permanent: true, direction: 'center'});
+                }
+            
+        
+            layer.on('click', function (e) {
+                console.log(feature.properties.title);
+                updateStore(feature);
+                window.selectedfid = feature.id;
+                console.log(selectedfid)
+
+            });
+        
         }
     }).addTo(map);
 
     map.fitBounds(pointLayer.getBounds());
 }
+
+
+document.addEventListener('alpine:init', () => {
+    Alpine.store('darkMode', {
+        on: false,
+
+        toggle() {
+            this.on = ! this.on
+        }
+    })
+
+    Alpine.store('myStore', {
+        title: 'Initial Title',
+        description: 'Initial Description',
+        imageUrl: 'Initial Image'
+    });
+
+    Alpine.store('mapStore', {
+      data: geojsonData,
+
+      highlighted: false,
+
+      highlight(id) {
+          if (feature.id === id) {
+            this.highlighted = true;
+          } else {
+            this.highlighted = false;
+          }
+        }
+    });
+
+
+});
+
+function updateStore(feature) {
+    Alpine.store('myStore').id = feature.id;
+    Alpine.store('myStore').title = feature.properties.title;
+    Alpine.store('myStore').description = feature.properties.description;
+    Alpine.store('myStore').imageUrl = mediaUrl + feature.properties.thumbnail;
+    console.log(Alpine.store('myStore').imageUrl)
+}
+
 
 document.body.addEventListener('htmx:afterSwap', function(event) {
     if (event.target.id === 'item-grid') {
@@ -39,40 +98,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('map')) {
         initMap();
     }
+
+
 });
-
-
-
-    // .setContent(function (layer){
-    //     return `${layer.feature.properties.title}`
-    // })
-    // .bindPopup(function (layer) {
-    //     return layer.feature.properties.title;
-  
-    // pointLayer.addData(geojsonData);
-    // Add other map features here
-
-        
-        // function (layer) {
-        // var popupContent = 
-        // <div>
-        //     <h3>${feature.properties.title}</h3>
-        // </div>;
-        
-        // return popupContent;
-        // });
-
-    // .on('mouseover', function (e) {
-    //     var marker = e.target;
-    //     var popupContent = "Title: " + marker.feature.properties.title + marker.feature.properties.description;
-    //     marker.bindPopup(popupContent).openPopup();
-    // })
-    // .on('mouseout', function (e) {
-    //     var marker = e.target;
-    //     marker.closePopup();
-    // })
-
-    // .bindPopup(function (layer) {
-    //     return layer.feature.properties.title;
-    // })
-            

@@ -2,6 +2,7 @@ from django.conf import settings
 
 from .models import Item
 
+
 class Cart(object):
     def __init__(self, request):
         self.session = request.session
@@ -52,7 +53,7 @@ class Cart(object):
         for p in self.cart.keys():
             self.cart[str(p)]['item'] = Item.objects.get(pk=p)
              
-        return int(sum(indv_item['item'].value * indv_item['quantity'] for indv_item in self.cart.values())) / 100
+        return int(sum(indv_item['item'].value * indv_item['quantity'] for indv_item in self.cart.values()))
     
     def clear(self):
         del self.session[settings.CART_SESSION_ID]

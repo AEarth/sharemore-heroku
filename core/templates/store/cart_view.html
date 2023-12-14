@@ -31,7 +31,7 @@
                     <div class="flex items-center space-x-3">
                       <div class="avatar">
                         <div class="mask mask-circle w-12 h-12">
-                          <img src={{ item.item.user.userprofile.thumbnail.url }}/>
+                          <img src={{ item.item.user.userprofile.thumbnail.url }}></img>
                         </div>
                       </div>
                       <div>
@@ -53,7 +53,7 @@
                     </div>
                   </td>
                   <td class="text-right">
-                    ${{ item.item.get_display_price }}
+                    {{ item.item.get_display_price }}
                     <br/>
                     {% comment %} <span class="badge badge-ghost badge-sm">Desktop Support Technician</span> {% endcomment %}
                   </td>

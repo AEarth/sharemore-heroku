@@ -1,0 +1,26 @@
+
+<div class="mt-6" x-data="{ $store.modal.open: false }">
+
+    <div  x-show="$store.modal.open" class="absolute top-0 left-0 w-full h-full flex items-center justify-center" style="background-color: rgba(0,0,0,.5);">
+        <button class="btn btn-warning btn-sm rounded-2xl relative -top-8 -right-20" @click="$store.modal.open = false">x</button>
+      <div class="text-left bg-white h-auto p-4 md:max-w-xl md:p-6 lg:p-8 shadow-xl rounded mx-2 md:mx-0" @click.away="$store.modal.open = false">
+       
+        <img
+        class="w-24 h-24 object-cover rounded-sm"
+        :src="$store.itemSelected.imageUrl"
+      />
+      <strong
+        x-text="$store.itemSelected.title"
+        class="text-slate-900 text-sm font-medium dark:text-slate-200"
+      ></strong>
+      <span
+        x-text="$store.itemSelected.description"
+        class="break-normal text-slate-500 text-sm font-medium dark:text-slate-400"
+      ></span>
+        <div class="flex justify-center mt-8">
+         
+          <a id="add-cart" href = "" class="btn btn-primary btn-sm">Add to cart</a>
+        </div>
+      </div>
+    </div>
+</div>

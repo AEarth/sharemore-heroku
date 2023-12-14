@@ -26,7 +26,7 @@ class ItemFilter(django_filters.FilterSet):
         
     def distance_filter(self, queryset, name, miles):
         user = get_current_request().user
-        if not user.userprofile.lat:
+        if not user.userprofile:
             print("user has no location stored")
             return queryset  # or handle this case differently
 

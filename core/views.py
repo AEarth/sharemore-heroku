@@ -33,7 +33,7 @@ def frontpage(request):
         request.session['view_preference'] = current_view  # Save in session
     
     if current_view == "map":
-        geojson = serialize('geojson', item_filter.qs, geometry_field='point', fields=('title', 'description', 'point', 'category', 'value', 'image_med', 'thumbnail', 'image_med.url' 'id'))
+        geojson = serialize('geojson', item_filter.qs, geometry_field='point', fields=('title', 'description', 'point', 'category', 'value', 'image', 'image_med', 'thumbnail', 'image_med.url', 'id', 'item.user.userprofile.thumbnail'))
         print(geojson)
         context['points'] = json.loads(geojson)
         #context['media_url'] = MEDIA_URL
@@ -53,8 +53,8 @@ def frontpage(request):
             return render(request, template, context)
         
         if request.GET.get("view") == "map":
-            template = "store/item_map_og.html"
-            #print(json.loads(geojson))
+            template = "store/item_map.html"
+            print(json.loads(geojson))
             return render(request, template, context)
 
     return render(request, "core/frontpage.html", context)

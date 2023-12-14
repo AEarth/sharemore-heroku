@@ -1,0 +1,113 @@
+<div
+  class="relative z-10"
+  aria-labelledby="modal-title"
+  role="dialog"
+  aria-modal="true"
+  x-data="{ $store.modal.open: false }"
+>
+  <!--
+      Background backdrop, show/hide based on modal state.
+  
+      Entering: "ease-out duration-300"
+        From: "opacity-0"
+        To: "opacity-100"
+      Leaving: "ease-in duration-200"
+        From: "opacity-100"
+        To: "opacity-0"
+    -->
+  {% comment %} <div
+    class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+  ></div> {% endcomment %}
+
+  <div x-show="$store.modal.open"
+        class="fixed inset-0 z-10 w-screen overflow-y-auto"
+        >
+        
+    <div
+      class="flex min-h-full justify-center absolute m-auto left-0 right-0 text-center items-center p-0"
+    >
+
+    <button class="btn btn-warning btn-sm rounded-2xl relative -top-8 -right-20" @click="$store.modal.open = false">x</button>
+      <!--
+          Modal panel, show/hide based on modal state.
+  
+          Entering: "ease-out duration-300"
+            From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            To: "opacity-100 translate-y-0 sm:scale-100"
+          Leaving: "ease-in duration-200"
+            From: "opacity-100 translate-y-0 sm:scale-100"
+            To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+        -->
+
+      <div
+        class="relative overflow-hidden rounded-lg bg-neutral-700 px-4 pb-4 pt-5 w-4/5 text-left shadow-xl sm:my-8 sm:w-full sm:max-w-lg sm:p-6"
+        @click.away="$store.modal.open = false"
+      >
+        <div class="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
+          <button
+            type="button"
+            class="rounded-md bg-neutral-content text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            @click="$store.modal.open = false"
+          >
+            <span class="sr-only">Close</span>
+            <svg
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+        <div class="flex justify-center"> 
+            <img 
+            class="w-64 h-64 object-cover rounded-sm"
+            :src="$store.itemSelected.imageUrl"
+          />
+        </div>
+        <div class="sm:flex sm:items-start pt-3">
+          
+          <div
+            class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10"
+            :src="$store.itemSelected.userImg"
+          >
+            <img 
+            :src="$store.itemSelected.userImg"
+            />
+          </div>
+          <div class="text-center sm:ml-4 sm:mt-0 sm:text-left">
+            <h3
+              class="text-base font-semibold leading-6"
+              id="modal-title"
+              x-text="$store.itemSelected.title"
+            >
+            </h3>
+            <div class="mt-2">
+              <p  x-text="$store.itemSelected.description"
+              class="text-sm">
+               </p>
+            </div>
+          </div>
+        </div>
+        <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+            <a id="add-cart" href=""
+                class="btn btn-primary btn-sm inline-flex">
+                Add to cart
+            </a>
+          {% comment %} <button
+            type="button"
+            class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+          > {% endcomment %}
+     
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

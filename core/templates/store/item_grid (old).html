@@ -3,32 +3,35 @@
   {% for item in items %}
 
   <div class="flex flex-wrap my-6 items-center justify-around">
-    <div class="card w-40 h-56 m-1 sm:w-72 sm:h-72 sm:m-2 bg-base-100 shadow-xl">
+    <div class="card w-72 m-2 bg-base-100 shadow-xl">
       <div>
         <a href="{% url 'item_detail'  item.category.slug item.slug %}">
           {% if item.image %}
           <figure>
-            <img class="rounded-md object-cover h-36 w-36 sm:h-48 sm:w-48" src="{{ item.image_med.url }}" alt="{{ item.title }}" />
+            <img class="rounded-md" src="{{ item.image_med.url }}" alt="{{ item.title }}" />
           </figure>
           {% endif %}
         </a>
       </div>
 
-      <div class="">
-        <span class="flex justify-between">
-          
-            <h3 class="font-bold">
-              <div class="text-sm text-left justify-start">{{ item.get_title }}</div>
-              <hr class="h-px bg-gray-700">
+      <div class="card-body">
+        <span class="flex justify-around">
+          <a
+            class="btn btn-sm btn-secondary"
+            href="{% url 'item_detail'  item.category.slug item.slug %}"
+          >
+            <h3 class="card-title">
+              <div class="text-sm">{{ item.get_title }}</div>
             </h3>
+          </a>
 
           {% if user.is_authenticated and request.user.id == item.user.id %}
-          <a class="btn btn-xs text-sm btn-error" href="{% url 'edit_item'  item.id %}">
+          <a class="btn btn-sm btn-error" href="{% url 'edit_item'  item.id %}">
             <i class="fas fa-edit"></i>
             {% endif %}
           </a>
         </span>
-        <p class="text-sm">{{ item.description }}</p>
+        <p>{{ item.description }}</p>
         <div class="card-actions justify-end">
           <div class="badge badge-outline">{{ item.get_display_price }}</div>
           <div class="badge badge-outline">{{ item.category }}</div>

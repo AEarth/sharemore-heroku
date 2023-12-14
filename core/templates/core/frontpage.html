@@ -1,15 +1,16 @@
 {% extends 'core/base.html' %}
 {% block title %}Welcome{% endblock %}
 {% block content %}
+
 <style type = "text/css">
-    .leaflet-container { z-index: 0 !important; }
+    .leaflet-container { z-index: 1 !important; }
 </style>
 
-    <span class="isolate inline-flex rounded-md shadow-sm ">
+    <span class="isolate inline-flex rounded-md shadow-sm bg-base-300">
         <div class="join">
             <input name="view"
                    value="grid"
-                   class="join-item btn btn-sm"
+                   class="join-item btn btn-sm bg-base-300"
                    type="radio"
                    aria-label="Grid"
                    hx-get="{% url 'frontpage' %}?{{ request.GET.urlencode }}"
@@ -21,7 +22,7 @@
 
             <input name="view"
                    value="list"
-                   class="join-item btn btn-sm"
+                   class="join-item btn btn-sm bg-base-300"
                    type="radio"
                    aria-label="List"
                    hx-get="{% url 'frontpage' %}?{{ request.GET.urlencode }}"
@@ -33,7 +34,7 @@
             
             <input name="view"
                    value="map"
-                   class="join-item btn btn-sm"
+                   class="join-item btn btn-sm bg-base-300"
                    type="radio"
                    aria-label="Map"
                    hx-get="{% url 'frontpage' %}?{{ request.GET.urlencode }}"
@@ -65,7 +66,7 @@
             {% elif current_view == 'list' %}
                 {% include 'store/item_list.html' %}
             {% elif current_view == 'map' %}
-                {% include 'store/item_map_og.html' %}
+                {% include 'store/item_map.html' %}
             {% else %}
                 {% include 'store/item_grid.html' %}
             {% endif %}
@@ -74,9 +75,10 @@
         {% endif %}
     </div>
  
-    {% load static %}
+    {% comment %} {% load static %}
     <script defer src="{% static 'store/item_map.js'%}">
-    </script>
+    </script> {% endcomment %}
+                           
 
 
 {% endblock %}

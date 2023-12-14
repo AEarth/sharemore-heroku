@@ -1,0 +1,31 @@
+    <div
+    x-data="{ on: true }"
+        x-bind:class="{ 'bg-yellow-300': on, 'bg-slate-400': !on }">
+        This div should be highlighted plz.
+    </div>
+
+
+<div 
+    x-data="{ id: 1 }" 
+    x-bind:class="{ 'bg-yellow-200': id == globalId }">
+    This div has ID 1.
+</div>
+
+<div x-data="{ id: 2 }" :class="{ 'bg-yellow-200': id == globalId }">
+    This div has ID 2.
+</div>
+
+<div x-data="{ id : 2 }" :class="{'bg-white': id == selectedfid}">
+    Should also be highlighted
+</div>
+
+<div x-data="{ id : 2 }" :class="{'bg-white': $store.myStore.id == selectedfid}">
+    Should also be highlighted
+</div>
+
+
+ <span x-text="$store.myStore.id"></span>
+    <p>Title: <span x-text="$store.myStore.title"></span></p>
+    <p>Description: <span x-text="$store.myStore.description"></span></p>
+    {% comment %} <img :src="$store.myStore.imageUrl"></img> {% endcomment %}
+</div>

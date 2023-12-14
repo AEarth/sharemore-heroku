@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
+import socket
 from pathlib import Path
 
 import environ
@@ -18,7 +19,7 @@ import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-ENVIRO_SET = 'local'
+ENVIRO_SET = ''#local
 
 env = environ.Env(
     # set casting, default value
@@ -111,10 +112,13 @@ if ENVIRO_SET == 'local':
     #MIDDLEWARE += ['livereload.middleware.LiveReloadScript',]
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = True
-    #trying to get debug toolbar to work in docker   
-    # DEBUG_TOOLBAR_CONFIG = {
-    #     'SHOW_TOOLBAR_CALLBACK': True
-    # }
+    #helping debug toolbar work in docker
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    #INTERNAL_IPS = ["127.0.0.1", "localhost", "0.0.0.0"]
+    INTERNAL_IPS = [ip[:-1] + '1' for ip in ips] + ['127.0.0.1', '10.0.2.2']
+else:
+    INTERNAL_IPS = ["127.0.0.1", "localhost", "0.0.0.0"]
+    DEBUG = True
 
 ROOT_URLCONF = 'sharemore.urls'
 
@@ -286,10 +290,6 @@ GRAPH_MODELS = {
   'group_models': True,
 }
 
-
-INTERNAL_IPS = [
-    "127.0.0.1",
-]
 
 
 if 'ON_HEROKU' in os.environ:
