@@ -1,6 +1,6 @@
 # ShareMore app
 ## A Full Stack Web Application Built with Python
-### Tech Stack: Django, HTMX, Tailwindcss, Alpine.js and Leaflet
+### Tech Stack: Django, Postgres, HTMX, Tailwindcss, Alpine.js and Leaflet
 
 Codebase for demo full stack project found at https://www.share-more.org/
 
